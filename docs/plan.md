@@ -114,7 +114,7 @@ flowchart TD
     M4 --> M5["Milestone 5: CI/CD Pipeline & End-to-End Validation"]
 ```
 
-### Milestone 1: Repository Foundation & Toolchains (Current PR)
+### Milestone 1: Repository Foundation & Toolchains ([#3](https://github.com/manuelnaranjo/bazelify-perl/issues/3))
 - [x] Configure Bazel `9.3.2` via `.bazelversion`.
 - [x] Create `.bazelrc` with platform flags, hermeticity flags, and RBE profile.
 - [x] Initialize `MODULE.bazel` with `llvm`, `toolchains_buildbuddy`, `platforms`, `platforms_contrib`, `rules_cc`, `rules_shell`, `tar.bzl`.
@@ -124,27 +124,27 @@ flowchart TD
 - [x] Establish `AGENTS.md` and repository guidelines.
 - [x] Write `docs/plan.md`.
 
-### Milestone 2: Upstream Source Fetching & Header Preparation
+### Milestone 2: Upstream Source Fetching & Header Preparation ([#4](https://github.com/manuelnaranjo/bazelify-perl/issues/4))
 - [ ] Implement `bazel/extensions.bzl` (`perl_dist` module extension) to download tarballs from `https://www.cpan.org/src/5.0/`.
 - [ ] Setup patch application mechanism pointing to `bazel/patches/perl/`.
 - [ ] Capture and stage hermetic `config.h` and `config.sh` for Linux (glibc 2.28) and macOS SDK.
 - [ ] Implement opcode/keyword regeneration or pre-staged generated C sources (`keywords.c`, `opcode.h`).
 
-### Milestone 3: Core Compilation & any2bazel Parity
+### Milestone 3: Core Compilation & any2bazel Parity ([#5](https://github.com/manuelnaranjo/bazelify-perl/issues/5))
 - [ ] Create `bazel/perl/perl.BUILD.bazel` overlay defining `cc_library` / `cc_binary` for `miniperl`, `libperl`, and `perl`.
 - [ ] Build core extensions and shared objects (POSIX, Socket, IO, Fcntl, etc.).
 - [ ] Run reference build in container and extract `model.reference.json`.
 - [ ] Run `bazel aquery` and extract `model.bazel.json`.
 - [ ] Diff and converge translation units in `any2bazel.json`.
 
-### Milestone 4: Relocatability & Distribution Packaging
+### Milestone 4: Relocatability & Distribution Packaging ([#6](https://github.com/manuelnaranjo/bazelify-perl/issues/6))
 - [ ] Implement post-build Starlark rule / script to patch `Config_heavy.pl` and `Config.pm` with relative paths.
 - [ ] Implement shebang rewriting tool (`change-shebang`).
 - [ ] Assemble `tar.bzl` distribution archives matching `rules_perl` naming:
   `perl-<version>-<platform>.tar.gz` and `perl-<version>-<platform>.tar.xz`.
 - [ ] Verify runtime execution of unpacked binaries in clean environments.
 
-### Milestone 5: CI/CD Pipeline & End-to-End Validation
+### Milestone 5: CI/CD Pipeline & End-to-End Validation ([#7](https://github.com/manuelnaranjo/bazelify-perl/issues/7))
 - [ ] Run PR build workflow for Perl 5.45.4 with live BuildBuddy RBE credentials.
 - [ ] Test tag release pipeline on simulated tag `v5.45.4.1`.
 - [ ] Set up e2e smoke test verifying consumption by `rules_perl`.
