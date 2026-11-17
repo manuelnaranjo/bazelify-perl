@@ -1,0 +1,73 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+# Platform-specific staged headers and definitions for hermetic Perl compilation
+cc_library(
+    name = "config_headers",
+    hdrs = select({
+        "//bazel:is_linux_amd64": glob(["linux_amd64/*.h"]),
+        "//bazel:is_linux_arm64": glob(["linux_arm64/*.h"]),
+        "//bazel:is_osx_amd64": glob(["osx_amd64/*.h"]),
+        "//bazel:is_osx_arm64": glob(["osx_arm64/*.h"]),
+        "//conditions:default": glob(["linux_amd64/*.h"]),
+    }),
+    copts = select({
+        "//bazel:is_linux_amd64": [
+            "-iquote",
+            "bazel/config/linux_amd64",
+        ],
+        "//bazel:is_linux_arm64": [
+            "-iquote",
+            "bazel/config/linux_arm64",
+        ],
+        "//bazel:is_osx_amd64": [
+            "-iquote",
+            "bazel/config/osx_amd64",
+        ],
+        "//bazel:is_osx_arm64": [
+            "-iquote",
+            "bazel/config/osx_arm64",
+        ],
+        "//conditions:default": [
+            "-iquote",
+            "bazel/config/linux_amd64",
+        ],
+    }),
+    includes = select({
+        "//bazel:is_linux_amd64": ["linux_amd64"],
+        "//bazel:is_linux_arm64": ["linux_arm64"],
+        "//bazel:is_osx_amd64": ["osx_amd64"],
+        "//bazel:is_osx_arm64": ["osx_arm64"],
+        "//conditions:default": ["linux_amd64"],
+    }),
+)
+
+# Platform-specific config.sh configuration file
+filegroup(
+    name = "config_sh",
+    srcs = select({
+        "//bazel:is_linux_amd64": ["linux_amd64/config.sh"],
+        "//bazel:is_linux_arm64": ["linux_arm64/config.sh"],
+        "//bazel:is_osx_amd64": ["osx_amd64/config.sh"],
+        "//bazel:is_osx_arm64": ["osx_arm64/config.sh"],
+        "//conditions:default": ["linux_amd64/config.sh"],
+    }),
+)
+
+# All staged configuration and header files across all supported target platforms
+filegroup(
+    name = "all_config_files",
+    srcs = glob([
+        "linux_amd64/*",
+        "linux_arm64/*",
+        "osx_amd64/*",
+        "osx_arm64/*",
+    ]),
+)
+
+cc_test(
+    name = "config_headers_test",
+    srcs = ["test_config_headers.c"],
+    deps = [":config_headers"],
+)
