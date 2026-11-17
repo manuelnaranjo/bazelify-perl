@@ -1,0 +1,3358 @@
+{
+  "build_system": "cmake",
+  "configured_files": {},
+  "repo_root": "",
+  "targets": {
+    "Cwd": {
+      "actions": [
+        {
+          "arguments": [
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-O2",
+            "-fPIC",
+            "-DDOUBLE_SLASHES_SPECIAL=0",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/dist/PathTools/Cwd.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/dist/PathTools/Cwd.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-shared",
+            "-o",
+            "Cwd.so"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "Cwd.so"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "shared_library",
+      "role": "production"
+    },
+    "Fcntl": {
+      "actions": [
+        {
+          "arguments": [
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-O2",
+            "-fPIC",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/ext/Fcntl/Fcntl.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/ext/Fcntl/Fcntl.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-shared",
+            "-o",
+            "Fcntl.so"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "Fcntl.so"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "shared_library",
+      "role": "production"
+    },
+    "IO": {
+      "actions": [
+        {
+          "arguments": [
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-O2",
+            "-fPIC",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/dist/IO/IO.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/dist/IO/IO.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-O2",
+            "-fPIC",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/dist/IO/poll.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/dist/IO/poll.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-shared",
+            "-o",
+            "IO.so"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "IO.so"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "shared_library",
+      "role": "production"
+    },
+    "POSIX": {
+      "actions": [
+        {
+          "arguments": [
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-O2",
+            "-fPIC",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/ext/POSIX/POSIX.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/ext/POSIX/POSIX.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-shared",
+            "-o",
+            "POSIX.so",
+            "-lm"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "POSIX.so"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "shared_library",
+      "role": "production"
+    },
+    "Socket": {
+      "actions": [
+        {
+          "arguments": [
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-O2",
+            "-fPIC",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/cpan/Socket/Socket.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/cpan/Socket/Socket.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-shared",
+            "-o",
+            "Socket.so"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "Socket.so"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "shared_library",
+      "role": "production"
+    },
+    "libperl": {
+      "actions": [
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/op.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/op.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/perl.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/perl.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/universal.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/universal.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/av.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/av.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/builtin.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/builtin.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/caretx.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/caretx.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/class.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/class.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/deb.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/deb.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/doio.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/doio.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/doop.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/doop.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/dquote.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/dquote.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/dump.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/dump.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/globals.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/globals.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/gv.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/gv.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/hv.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/hv.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/keywords.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/keywords.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/locale.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/locale.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/long_names.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/long_names.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/mathoms.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/mathoms.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/mg.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/mg.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/mro_core.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/mro_core.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/numeric.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/numeric.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pad.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pad.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/peep.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/peep.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/perlio.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/perlio.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/perly.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/perly.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_ctl.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_ctl.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_hot.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_hot.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_pack.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_pack.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_sort.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_sort.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_sys.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_sys.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/reentr.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/reentr.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_debug.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_debug.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_invlist.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_invlist.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_study.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_study.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_trie.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_trie.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regexec.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regexec.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/run.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/run.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/scope.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/scope.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/sv.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/sv.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/taint.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/taint.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/time64.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/time64.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/toke.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/toke.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/utf8.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/utf8.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/util.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/util.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/ext/DynaLoader/DynaLoader.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/ext/DynaLoader/DynaLoader.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-shared",
+            "-o",
+            "libperl.so",
+            "-lpthread",
+            "-ldl",
+            "-lm",
+            "-lutil",
+            "-lc"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "libperl.so"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "shared_library",
+      "role": "production"
+    },
+    "miniperl": {
+      "actions": [
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/opmini.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/opmini.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/perlmini.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/perlmini.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/universalmini.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/universalmini.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/av.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/av.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/builtin.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/builtin.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/caretx.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/caretx.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/class.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/class.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/deb.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/deb.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/doio.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/doio.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/doop.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/doop.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/dquote.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/dquote.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/dump.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/dump.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/globals.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/globals.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/gv.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/gv.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/hv.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/hv.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/keywords.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/keywords.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/locale.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/locale.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/long_names.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/long_names.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/mathoms.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/mathoms.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/mg.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/mg.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/mro_core.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/mro_core.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/numeric.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/numeric.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pad.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pad.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/peep.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/peep.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/perlio.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/perlio.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/perly.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/perly.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_ctl.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_ctl.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_hot.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_hot.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_pack.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_pack.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_sort.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_sort.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/pp_sys.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/pp_sys.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/reentr.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/reentr.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_debug.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_debug.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_invlist.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_invlist.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_study.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_study.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regcomp_trie.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regcomp_trie.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/regexec.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/regexec.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/run.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/run.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/scope.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/scope.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/sv.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/sv.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/taint.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/taint.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/time64.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/time64.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/toke.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/toke.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/utf8.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/utf8.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/util.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/util.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-DPERL_IS_MINIPERL",
+            "-DPERL_EXTERNAL_GLOB",
+            "-I.",
+            "-c",
+            "external/+perl_dist+perl/miniperlmain.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "external/+perl_dist+perl/miniperlmain.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-fstack-protector-strong",
+            "-o",
+            "miniperl",
+            "-lpthread",
+            "-ldl",
+            "-lm",
+            "-lutil",
+            "-lc"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "miniperl"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "executable",
+      "role": "production"
+    },
+    "perl": {
+      "actions": [
+        {
+          "arguments": [
+            "-DPERL_CORE",
+            "-fwrapv",
+            "-fno-strict-aliasing",
+            "-pipe",
+            "-fstack-protector-strong",
+            "-D_LARGEFILE_SOURCE",
+            "-D_FILE_OFFSET_BITS=64",
+            "-std=c99",
+            "-O2",
+            "-Wall",
+            "-Werror=pointer-arith",
+            "-Werror=vla",
+            "-Wextra",
+            "-Wno-long-long",
+            "-Wno-declaration-after-statement",
+            "-Wno-nonnull-compare",
+            "-Wc++-compat",
+            "-Wwrite-strings",
+            "-I.",
+            "-c",
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/perlmain.c"
+          ],
+          "inputs": [],
+          "mnemonic": "CppCompile",
+          "outputs": [
+            "bazel-out/k8-fastbuild/bin/external/+perl_dist+perl/perlmain.o"
+          ]
+        },
+        {
+          "arguments": [
+            "-o",
+            "perl",
+            "-fstack-protector-strong",
+            "-Wl,-E",
+            "libperl.a",
+            "-lpthread",
+            "-ldl",
+            "-lm",
+            "-lutil",
+            "-lc"
+          ],
+          "inputs": [],
+          "mnemonic": "CppLink",
+          "outputs": [
+            "perl"
+          ]
+        }
+      ],
+      "deps": [],
+      "kind": "executable",
+      "role": "production"
+    }
+  }
+}

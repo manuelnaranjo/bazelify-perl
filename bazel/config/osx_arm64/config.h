@@ -68,7 +68,7 @@
  *	This symbol, if defined, indicates that the cuserid routine is
  *	available to get character login names.
  */
-#define HAS_CUSERID		/**/
+#undef HAS_CUSERID
 
 /* HAS_DIFFTIME:
  *	This symbol, if defined, indicates that the difftime routine is
@@ -433,7 +433,7 @@
  *	process.
  */
 #define HAS_SETREGID		/**/
-#define HAS_SETRESGID		/**/
+/*#define HAS_SETRESGID		/**/
 
 /* HAS_SETREUID:
  *	This symbol, if defined, indicates that the setreuid routine is
@@ -446,7 +446,7 @@
  *	process.
  */
 #define HAS_SETREUID		/**/
-#define HAS_SETRESUID		/**/
+/*#define HAS_SETRESUID		/**/
 
 /* HAS_SETRGID:
  *	This symbol, if defined, indicates that the setrgid routine is available
@@ -804,7 +804,7 @@
  *	This symbol, if defined, indicates that the eaccess routine is
  *	available to do extended access checks.
  */
-#define HAS_EACCESS		/**/
+/*#define HAS_EACCESS		/**/
 
 /* I_SYS_ACCESS:
  *	This symbol, if defined, indicates to the C program that it should
@@ -1995,7 +1995,7 @@
  *	This symbol, if defined, indicates that struct semid_ds * is
  *	used for semctl IPC_STAT.
  */
-/*#define HAS_UNION_SEMUN	/ **/
+#define HAS_UNION_SEMUN	/**/
 #define USE_SEMCTL_SEMUN	/**/
 #define USE_SEMCTL_SEMID_DS	/**/
 
@@ -2393,7 +2393,7 @@
  *	This symbol, if defined, indicates that the clearenv () routine is
  *	available for use.
  */
-#define HAS_CLEARENV		/**/
+/*#define HAS_CLEARENV		/**/
 
 /* HAS_STRUCT_CMSGHDR:
  *	This symbol, if defined, indicates that the struct cmsghdr
@@ -2451,7 +2451,7 @@
  *	This symbol, if defined, indicates that the dup3 routine is
  *	available to duplicate file descriptors.
  */
-#define HAS_DUP3	/**/
+/*#define HAS_DUP3	/**/
 
 /* HAS_ERF:
  *	This symbol, if defined, indicates that the erf routine is
@@ -2809,7 +2809,7 @@
  *	This symbol, if defined, indicates that the getspnam system call is
  *	available to retrieve SysV shadow password entries by name.
  */
-#define HAS_GETSPNAM		/**/
+/*#define HAS_GETSPNAM		/**/
 
 /* HAS_HASMNTOPT:
  *	This symbol, if defined, indicates that the hasmntopt routine is
@@ -3061,7 +3061,7 @@
  *	available to return a pointer to the last occurrence of a byte in
  *	a memory area (or NULL if not found).
  */
-#define HAS_MEMRCHR		/**/
+/*#define HAS_MEMRCHR		/**/
 
 /* HAS_MKDTEMP:
  *	This symbol, if defined, indicates that the mkdtemp routine is
@@ -3205,7 +3205,7 @@
  *	This symbol, if defined, indicates that the pipe2 routine is
  *	available to create an inter-process channel.
  */
-#define HAS_PIPE2		/**/
+/*#define HAS_PIPE2		/**/
 
 /* HAS_PRCTL:
  *	This symbol, if defined, indicates that the prctl routine is
@@ -3217,8 +3217,8 @@
  *	This symbol, if defined, indicates that the prctl routine is
  *	available to set process title and supports PR_SET_NAME.
  */
-#define HAS_PRCTL		/**/
-#define HAS_PRCTL_SET_NAME		/**/
+/*#define HAS_PRCTL		/**/
+/*#define HAS_PRCTL_SET_NAME		/**/
 
 /* HAS_PROCSELFEXE:
  *	This symbol is defined if PROCSELFEXE_PATH is a symlink
@@ -3829,7 +3829,7 @@
  *	This symbol, if defined, indicates that <shadow.h> exists and
  *	should be included.
  */
-#define I_SHADOW		/**/
+/*#define I_SHADOW		/**/
 
 /* I_SOCKS:
  *	This symbol, if defined, indicates that <socks.h> exists and

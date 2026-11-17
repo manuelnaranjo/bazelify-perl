@@ -1,0 +1,697 @@
+# Overlay BUILD file for Perl 5.45.4 distribution
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(glob(["**"]))
+
+# All sources in upstream Perl distribution
+filegroup(
+    name = "sources",
+    srcs = glob(["**"]),
+)
+
+# Header files
+filegroup(
+    name = "headers",
+    srcs = glob([
+        "*.h",
+        "cpan/**/*.h",
+        "dist/**/*.h",
+        "ext/**/*.h",
+    ]),
+)
+
+# C source translation units
+filegroup(
+    name = "c_sources",
+    srcs = glob([
+        "*.c",
+        "cpan/**/*.c",
+        "dist/**/*.c",
+        "ext/**/*.c",
+    ]),
+)
+
+# Pre-staged generated C sources and headers from upstream CPAN release
+filegroup(
+    name = "generated_c_sources",
+    srcs = [
+        "keywords.c",
+        "opcode.h",
+        "opnames.h",
+        "regnodes.h",
+    ],
+)
+
+# Host generator tool for uudmap.h, bitcount.h, and mg_data.h
+cc_binary(
+    name = "generate_uudmap",
+    srcs = [
+        "generate_uudmap.c",
+        "mg_raw.h",
+    ],
+)
+
+# Action to regenerate uudmap.h, bitcount.h, and mg_data.h
+genrule(
+    name = "regenerate_headers",
+    outs = [
+        "bitcount.h",
+        "mg_data.h",
+        "uudmap.h",
+    ],
+    cmd = "$(execpath :generate_uudmap) $(OUTS)",
+    tools = [":generate_uudmap"],
+)
+
+# Automatically generate git_version.h for release build
+genrule(
+    name = "git_version_h",
+    outs = ["git_version.h"],
+    cmd = """cat > $@ << 'EOF'
+/**************************************************************************
+* WARNING: 'git_version.h' is automatically generated
+*          DO NOT EDIT DIRECTLY - edit make_patchnum.pl instead
+***************************************************************************/
+#define PERL_GIT_UNPUSHED_COMMITS		\\
+    /*leave-this-comment*/
+EOF
+""",
+)
+
+# Miniperl-specific variants of op.c, perl.c, and universal.c
+genrule(
+    name = "opmini_c",
+    srcs = ["op.c"],
+    outs = ["opmini.c"],
+    cmd = "cp $< $@",
+)
+
+genrule(
+    name = "perlmini_c",
+    srcs = ["perl.c"],
+    outs = ["perlmini.c"],
+    cmd = "cp $< $@",
+)
+
+genrule(
+    name = "universalmini_c",
+    srcs = ["universal.c"],
+    outs = ["universalmini.c"],
+    cmd = "cp $< $@",
+)
+
+filegroup(
+    name = "perl_library_files",
+    srcs = glob(
+        [
+            "lib/**/*.pm",
+            "lib/**/*.pl",
+            "cpan/**/*.pm",
+            "cpan/**/*.pl",
+            "dist/**/*.pm",
+            "dist/**/*.pl",
+            "ext/**/*.pm",
+            "ext/**/*.pl",
+        ],
+        allow_empty = True,
+    ),
+)
+
+genrule(
+    name = "generate_configpm",
+    srcs = [
+        "configpm",
+        "Porting/Glossary",
+        "myconfig.SH",
+        "@@//bazel/config:config_sh",
+    ] + glob(["lib/**/*.pm", "lib/**/*.pl"]),
+    outs = [
+        "lib/Config.pm",
+        "lib/Config_heavy.pl",
+        "lib/Config.pod",
+    ],
+    cmd = """
+        ROOT=$$(pwd)/$$(dirname $(location Porting/Glossary))/..
+        cp $(location @@//bazel/config:config_sh) $$ROOT/config.sh
+        (cd $$ROOT && $$OLDPWD/$(location :miniperl) -Ilib configpm)
+        cp $$ROOT/lib/Config.pm $(location lib/Config.pm)
+        cp $$ROOT/lib/Config_heavy.pl $(location lib/Config_heavy.pl)
+        cp $$ROOT/lib/Config.pod $(location lib/Config.pod)
+    """,
+    tools = [":miniperl"],
+)
+
+genrule(
+    name = "generate_dynaloader_c",
+    srcs = [
+        "configpm",
+        "ext/DynaLoader/dl_dlopen.xs",
+        "lib/ExtUtils/typemap",
+        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+        ":perl_library_files",
+        ":generate_configpm",
+    ],
+    outs = ["ext/DynaLoader/DynaLoader.c"],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        INCS="-I$$CFGDIR"
+        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
+            if [ -d "$$d" ]; then
+                INCS="$$INCS -I$$d"
+            fi
+        done
+        TYPEMAP=$$(pwd)/$(location lib/ExtUtils/typemap)
+        XSUBPP=$$(pwd)/$(location dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp)
+        XS=$$(pwd)/$(location ext/DynaLoader/dl_dlopen.xs)
+        $$(pwd)/$(location :miniperl) $$INCS "$$XSUBPP" -noprototypes -typemap "$$TYPEMAP" "$$XS" > $@
+    """,
+    tools = [":miniperl"],
+)
+
+_CORE_COPTS = [
+    "-DPERL_CORE",
+    "-fwrapv",
+    "-fno-strict-aliasing",
+    "-pipe",
+    "-fstack-protector-strong",
+    "-D_LARGEFILE_SOURCE",
+    "-D_FILE_OFFSET_BITS=64",
+    "-std=c99",
+    "-Wall",
+    "-Werror=pointer-arith",
+    "-Werror=vla",
+    "-Wextra",
+    "-Wno-long-long",
+    "-Wno-declaration-after-statement",
+    "-Wno-nonnull-compare",
+    "-Wc++-compat",
+    "-Wwrite-strings",
+    "-iquote",
+    "external/+perl_dist+perl",
+    "-iquote",
+    "external/+perl_dist+perl/ext/DynaLoader",
+    "-iquote",
+    ".",
+    "-iquote",
+    "ext/DynaLoader",
+]
+
+_EXTENSION_COPTS = [
+    "-fwrapv",
+    "-fno-strict-aliasing",
+    "-pipe",
+    "-fstack-protector-strong",
+    "-D_LARGEFILE_SOURCE",
+    "-D_FILE_OFFSET_BITS=64",
+    "-std=c99",
+    "-Wall",
+    "-Werror=pointer-arith",
+    "-Werror=vla",
+    "-Wextra",
+    "-Wno-long-long",
+    "-Wno-declaration-after-statement",
+    "-Wno-nonnull-compare",
+    "-Wc++-compat",
+    "-Wwrite-strings",
+    "-iquote",
+    "external/+perl_dist+perl",
+    "-iquote",
+    ".",
+]
+
+_SYSTEM_LIBS = select({
+    "@@//bazel:is_osx_amd64": [
+        "-lpthread",
+        "-ldl",
+        "-lm",
+        "-lc",
+    ],
+    "@@//bazel:is_osx_arm64": [
+        "-lpthread",
+        "-ldl",
+        "-lm",
+        "-lc",
+    ],
+    "//conditions:default": [
+        "-lpthread",
+        "-ldl",
+        "-lm",
+        "-lutil",
+        "-lc",
+    ],
+})
+
+_PERL_LINKOPTS = select({
+    "@@//bazel:is_osx_amd64": [],
+    "@@//bazel:is_osx_arm64": [],
+    "//conditions:default": ["-Wl,-E"],
+})
+
+_EXTENSION_LINKOPTS = select({
+    "@@//bazel:is_osx_amd64": ["-undefined", "dynamic_lookup"],
+    "@@//bazel:is_osx_arm64": ["-undefined", "dynamic_lookup"],
+    "//conditions:default": [],
+})
+
+_COMMON_SRCS = [
+    "av.c",
+    "builtin.c",
+    "caretx.c",
+    "class.c",
+    "deb.c",
+    "doio.c",
+    "doop.c",
+    "dquote.c",
+    "dump.c",
+    "globals.c",
+    "gv.c",
+    "hv.c",
+    "keywords.c",
+    "locale.c",
+    "long_names.c",
+    "mathoms.c",
+    "mg.c",
+    "mro_core.c",
+    "numeric.c",
+    "pad.c",
+    "peep.c",
+    "perlio.c",
+    "perly.c",
+    "pp.c",
+    "pp_ctl.c",
+    "pp_hot.c",
+    "pp_pack.c",
+    "pp_sort.c",
+    "pp_sys.c",
+    "reentr.c",
+    "regcomp.c",
+    "regcomp_debug.c",
+    "regcomp_invlist.c",
+    "regcomp_study.c",
+    "regcomp_trie.c",
+    "regexec.c",
+    "run.c",
+    "scope.c",
+    "sv.c",
+    "taint.c",
+    "time64.c",
+    "toke.c",
+    "utf8.c",
+    "util.c",
+]
+
+cc_library(
+    name = "perl_headers",
+    hdrs = glob([
+        "*.h",
+        "*.inc",
+    ]) + [
+        ":git_version_h",
+    ],
+    textual_hdrs = [
+        "perly.act",
+        "perly.tab",
+        "vutil.c",
+        "ext/DynaLoader/dlutils.c",
+    ],
+    deps = [
+        "@@//bazel/config:config_headers",
+    ],
+)
+
+# miniperl binary
+cc_binary(
+    name = "miniperl",
+    srcs = _COMMON_SRCS + [
+        ":opmini_c",
+        ":perlmini_c",
+        ":universalmini_c",
+        "miniperlmain.c",
+    ],
+    copts = _CORE_COPTS + [
+        "-DPERL_IS_MINIPERL",
+        "-DPERL_EXTERNAL_GLOB",
+    ],
+    linkopts = _SYSTEM_LIBS,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+genrule(
+    name = "generate_perlmain_c",
+    srcs = [
+        "configpm",
+        ":perl_library_files",
+        ":generate_configpm",
+    ],
+    outs = ["perlmain.c"],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        INCS="-I$$CFGDIR"
+        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
+            if [ -d "$$d" ]; then
+                INCS="$$INCS -I$$d"
+            fi
+        done
+        $$(pwd)/$(location :miniperl) $$INCS -MExtUtils::Miniperl -e 'writemain(@ARGV)' DynaLoader > $@
+    """,
+    tools = [":miniperl"],
+)
+
+# libperl library
+cc_library(
+    name = "libperl",
+    srcs = _COMMON_SRCS + [
+        "op.c",
+        "perl.c",
+        "universal.c",
+        ":generate_dynaloader_c",
+    ],
+    copts = _CORE_COPTS,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# perl binary
+cc_binary(
+    name = "perl",
+    srcs = [
+        ":generate_perlmain_c",
+    ],
+    copts = _CORE_COPTS,
+    linkopts = _SYSTEM_LIBS + _PERL_LINKOPTS,
+    deps = [
+        ":libperl",
+    ],
+)
+
+# Core C/XS Extension: POSIX
+genrule(
+    name = "generate_posix_c",
+    srcs = [
+        "configpm",
+        "lib/ExtUtils/typemap",
+        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+        ":perl_library_files",
+        ":generate_configpm",
+    ] + glob(["ext/POSIX/**/*"]),
+    outs = [
+        "ext/POSIX/POSIX.c",
+        "ext/POSIX/const-c.inc",
+    ],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        TREE=$$(mktemp -d)
+        mkdir -p $$TREE/lib/ExtUtils $$TREE/ext/POSIX
+        touch $$TREE/config_h.SH $$TREE/perl.h $$TREE/cflags
+        cp -r --no-preserve=mode $$PERL_ROOT/lib/* $$TREE/lib/
+        cp -r --no-preserve=mode $$CFGDIR/* $$TREE/lib/
+        for d in $$PERL_ROOT/cpan/*/lib/* $$PERL_ROOT/dist/*/lib/* $$PERL_ROOT/ext/*/lib/*; do
+            if [ -e "$$d" ]; then cp -r --no-preserve=mode "$$d" $$TREE/lib/; fi
+        done
+        for d in $$PERL_ROOT/cpan/*/*.pm $$PERL_ROOT/dist/*/*.pm $$PERL_ROOT/ext/*/*.pm; do
+            if [ -f "$$d" ]; then cp --no-preserve=mode "$$d" $$TREE/lib/; fi
+        done
+        cp -r --no-preserve=mode $$PERL_ROOT/ext/POSIX/* $$TREE/ext/POSIX/
+        MINIPERL=$$(pwd)/$(location :miniperl)
+        (cd $$TREE/ext/POSIX && PERL_CORE=1 $$MINIPERL -I../../lib Makefile.PL && $$MINIPERL -I../../lib $$PERL_ROOT/dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp -noprototypes -typemap $$PERL_ROOT/lib/ExtUtils/typemap -typemap typemap POSIX.xs > POSIX.c)
+        cp $$TREE/ext/POSIX/POSIX.c $(location ext/POSIX/POSIX.c)
+        cp $$TREE/ext/POSIX/const-c.inc $(location ext/POSIX/const-c.inc)
+        rm -rf $$TREE
+    """,
+    tools = [":miniperl"],
+)
+
+cc_binary(
+    name = "POSIX",
+    srcs = [
+        ":generate_posix_c",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/ext/POSIX",
+        "-iquote",
+        "ext/POSIX",
+    ],
+    linkopts = _EXTENSION_LINKOPTS + ["-lm"],
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Core C/XS Extension: Socket
+genrule(
+    name = "generate_socket_c",
+    srcs = [
+        "configpm",
+        "lib/ExtUtils/typemap",
+        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+        ":perl_library_files",
+        ":generate_configpm",
+    ] + glob(["cpan/Socket/**/*"]),
+    outs = [
+        "cpan/Socket/Socket.c",
+        "cpan/Socket/const-c.inc",
+    ],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        TREE=$$(mktemp -d)
+        mkdir -p $$TREE/lib/ExtUtils $$TREE/cpan/Socket
+        touch $$TREE/config_h.SH $$TREE/perl.h $$TREE/cflags
+        cp -r --no-preserve=mode $$PERL_ROOT/lib/* $$TREE/lib/
+        cp -r --no-preserve=mode $$CFGDIR/* $$TREE/lib/
+        for d in $$PERL_ROOT/cpan/*/lib/* $$PERL_ROOT/dist/*/lib/* $$PERL_ROOT/ext/*/lib/*; do
+            if [ -e "$$d" ]; then cp -r --no-preserve=mode "$$d" $$TREE/lib/; fi
+        done
+        for d in $$PERL_ROOT/cpan/*/*.pm $$PERL_ROOT/dist/*/*.pm $$PERL_ROOT/ext/*/*.pm; do
+            if [ -f "$$d" ]; then cp --no-preserve=mode "$$d" $$TREE/lib/; fi
+        done
+        cp -r --no-preserve=mode $$PERL_ROOT/cpan/Socket/* $$TREE/cpan/Socket/
+        MINIPERL=$$(pwd)/$(location :miniperl)
+        (cd $$TREE/cpan/Socket && PERL_CORE=1 $$MINIPERL -I../../lib Makefile.PL && $$MINIPERL -I../../lib $$PERL_ROOT/dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp -noprototypes -typemap $$PERL_ROOT/lib/ExtUtils/typemap -typemap typemap Socket.xs > Socket.c)
+        cp $$TREE/cpan/Socket/Socket.c $(location cpan/Socket/Socket.c)
+        cp $$TREE/cpan/Socket/const-c.inc $(location cpan/Socket/const-c.inc)
+        rm -rf $$TREE
+    """,
+    tools = [":miniperl"],
+)
+
+cc_binary(
+    name = "Socket",
+    srcs = [
+        ":generate_socket_c",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/cpan/Socket",
+        "-iquote",
+        "cpan/Socket",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Core C/XS Extension: Fcntl
+genrule(
+    name = "generate_fcntl_c",
+    srcs = [
+        "configpm",
+        "lib/ExtUtils/typemap",
+        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+        ":perl_library_files",
+        ":generate_configpm",
+    ] + glob(["ext/Fcntl/**/*"]),
+    outs = [
+        "ext/Fcntl/Fcntl.c",
+        "ext/Fcntl/const-c.inc",
+    ],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        TREE=$$(mktemp -d)
+        mkdir -p $$TREE/lib/ExtUtils $$TREE/ext/Fcntl
+        touch $$TREE/config_h.SH $$TREE/perl.h $$TREE/cflags
+        cp -r --no-preserve=mode $$PERL_ROOT/lib/* $$TREE/lib/
+        cp -r --no-preserve=mode $$CFGDIR/* $$TREE/lib/
+        for d in $$PERL_ROOT/cpan/*/lib/* $$PERL_ROOT/dist/*/lib/* $$PERL_ROOT/ext/*/lib/*; do
+            if [ -e "$$d" ]; then cp -r --no-preserve=mode "$$d" $$TREE/lib/; fi
+        done
+        for d in $$PERL_ROOT/cpan/*/*.pm $$PERL_ROOT/dist/*/*.pm $$PERL_ROOT/ext/*/*.pm; do
+            if [ -f "$$d" ]; then cp --no-preserve=mode "$$d" $$TREE/lib/; fi
+        done
+        cp -r --no-preserve=mode $$PERL_ROOT/ext/Fcntl/* $$TREE/ext/Fcntl/
+        MINIPERL=$$(pwd)/$(location :miniperl)
+        (cd $$TREE/ext/Fcntl && PERL_CORE=1 $$MINIPERL -I../../lib Makefile.PL && $$MINIPERL -I../../lib $$PERL_ROOT/dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp -noprototypes -typemap $$PERL_ROOT/lib/ExtUtils/typemap Fcntl.xs > Fcntl.c)
+        cp $$TREE/ext/Fcntl/Fcntl.c $(location ext/Fcntl/Fcntl.c)
+        cp $$TREE/ext/Fcntl/const-c.inc $(location ext/Fcntl/const-c.inc)
+        rm -rf $$TREE
+    """,
+    tools = [":miniperl"],
+)
+
+cc_binary(
+    name = "Fcntl",
+    srcs = [
+        ":generate_fcntl_c",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/ext/Fcntl",
+        "-iquote",
+        "ext/Fcntl",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Helper: ppport.h generator
+genrule(
+    name = "generate_ppport_h",
+    srcs = [
+        "configpm",
+        ":perl_library_files",
+        ":generate_configpm",
+    ] + glob(["dist/Devel-PPPort/**/*"]),
+    outs = ["dist/Devel-PPPort/ppport.h"],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        TMP_DIR=$$(mktemp -d)
+        cp -r --no-preserve=mode $$PERL_ROOT/dist/Devel-PPPort/* $$TMP_DIR/
+        MINIPERL=$$(pwd)/$(location :miniperl)
+        (cd $$TMP_DIR && $$MINIPERL -I$$CFGDIR -I$$PERL_ROOT/lib PPPort_pm.PL && $$MINIPERL -I$$CFGDIR -I$$PERL_ROOT/lib -I. ppport_h.PL)
+        cp $$TMP_DIR/ppport.h $@
+        rm -rf $$TMP_DIR
+    """,
+    tools = [":miniperl"],
+)
+
+# Core C/XS Extension: IO
+genrule(
+    name = "generate_io_c",
+    srcs = [
+        "configpm",
+        "lib/ExtUtils/typemap",
+        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+        ":perl_library_files",
+        ":generate_configpm",
+        ":generate_ppport_h",
+        "dist/IO/IO.xs",
+    ],
+    outs = ["dist/IO/IO.c"],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        INCS="-I$$CFGDIR"
+        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
+            if [ -d "$$d" ]; then
+                INCS="$$INCS -I$$d"
+            fi
+        done
+        MINIPERL=$$(pwd)/$(location :miniperl)
+        TYPEMAP=$$(pwd)/$(location lib/ExtUtils/typemap)
+        XSUBPP=$$(pwd)/$(location dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp)
+        XS=$$(pwd)/$(location dist/IO/IO.xs)
+        $$MINIPERL $$INCS "$$XSUBPP" -noprototypes -typemap "$$TYPEMAP" "$$XS" > $@
+    """,
+    tools = [":miniperl"],
+)
+
+cc_binary(
+    name = "IO",
+    srcs = [
+        ":generate_io_c",
+        ":generate_ppport_h",
+        "dist/IO/poll.c",
+        "dist/IO/poll.h",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/dist/IO",
+        "-iquote",
+        "dist/IO",
+        "-iquote",
+        "$(GENDIR)/external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "dist/Devel-PPPort",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Core C/XS Extension: Cwd
+genrule(
+    name = "generate_cwd_c",
+    srcs = [
+        "configpm",
+        "lib/ExtUtils/typemap",
+        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+        ":perl_library_files",
+        ":generate_configpm",
+        ":generate_ppport_h",
+        "dist/PathTools/Cwd.xs",
+    ],
+    outs = ["dist/PathTools/Cwd.c"],
+    cmd = """
+        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
+        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
+        INCS="-I$$CFGDIR"
+        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
+            if [ -d "$$d" ]; then
+                INCS="$$INCS -I$$d"
+            fi
+        done
+        MINIPERL=$$(pwd)/$(location :miniperl)
+        TYPEMAP=$$(pwd)/$(location lib/ExtUtils/typemap)
+        XSUBPP=$$(pwd)/$(location dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp)
+        XS=$$(pwd)/$(location dist/PathTools/Cwd.xs)
+        $$MINIPERL $$INCS "$$XSUBPP" -noprototypes -typemap "$$TYPEMAP" "$$XS" > $@
+    """,
+    tools = [":miniperl"],
+)
+
+cc_binary(
+    name = "Cwd",
+    srcs = [
+        ":generate_cwd_c",
+        ":generate_ppport_h",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/dist/PathTools",
+        "-iquote",
+        "dist/PathTools",
+        "-iquote",
+        "$(GENDIR)/external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "dist/Devel-PPPort",
+    ],
+    defines = ["DOUBLE_SLASHES_SPECIAL=0"],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)

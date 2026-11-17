@@ -131,11 +131,11 @@ flowchart TD
 - [x] Implement opcode/keyword regeneration or pre-staged generated C sources (`keywords.c`, `opcode.h`, `regnodes.h`).
 
 ### Milestone 3: Core Compilation & any2bazel Parity ([#5](https://github.com/manuelnaranjo/bazelify-perl/issues/5))
-- [ ] Create `bazel/perl/perl.BUILD.bazel` overlay defining `cc_library` / `cc_binary` for `miniperl`, `libperl`, and `perl`.
-- [ ] Build core extensions and shared objects (POSIX, Socket, IO, Fcntl, etc.).
-- [ ] Run reference build in container and extract `model.reference.json`.
-- [ ] Run `bazel aquery` and extract `model.bazel.json`.
-- [ ] Diff and converge translation units in `any2bazel.json`.
+- [x] Create `bazel/perl/perl.BUILD.bazel` overlay defining `cc_library` / `cc_binary` for `miniperl`, `libperl`, and `perl`.
+- [x] Build core extensions and shared objects (POSIX, Socket, IO, Fcntl, etc.).
+- [x] Run reference build in container and extract `model.reference.json`.
+- [x] Run `bazel aquery` and extract `model.bazel.json`.
+- [x] Diff and converge translation units in `any2bazel.json`.
 
 ### Milestone 4: Relocatability & Distribution Packaging ([#6](https://github.com/manuelnaranjo/bazelify-perl/issues/6))
 - [ ] Implement post-build Starlark rule / script to patch `Config_heavy.pl` and `Config.pm` with relative paths.
