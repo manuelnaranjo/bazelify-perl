@@ -1,0 +1,28 @@
+name: Set up Bazel
+description: Sets up Bazel and optionally configures BuildBuddy RBE.
+
+inputs:
+  buildbuddy-endpoint:
+    description: BuildBuddy endpoint hostname.
+    required: false
+    default: ""
+  buildbuddy-api-key:
+    description: BuildBuddy API key.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: bazel-contrib/setup-bazel@104e3eea9447cdaa4b00d0fb46191a3985d26ab3 # v0.19.1
+      with:
+        bazelisk-cache: true
+        repository-cache: true
+        disk-cache: ${{ inputs.buildbuddy-endpoint == '' || inputs.buildbuddy-api-key == '' }}
+    - name: Configure BuildBuddy RBE
+      if: inputs.buildbuddy-endpoint != '' && inputs.buildbuddy-api-key != ''
+      shell: bash
+      env:
+        BB_ENDPOINT: ${{ inputs.buildbuddy-endpoint }}
+        BB_API_KEY: ${{ inputs.buildbuddy-api-key }}
+      run: tools/setup_buildbuddy.sh

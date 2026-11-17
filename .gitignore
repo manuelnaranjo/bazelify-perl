@@ -1,0 +1,14 @@
+# User credentials and overrides
+.bazelrc.user
+
+# Git worktrees
+.worktrees/
+
+# Outbox for untether mobile delivery
+.untether-outbox/
+
+# Bazel symlinks and outputs
+bazel-*
+
+# Scratch files
+scratch/

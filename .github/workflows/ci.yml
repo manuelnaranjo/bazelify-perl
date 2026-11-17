@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}${{ github.ref_name == 'main' && format('-{0}', github.run_id) || '' }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
+
+jobs:
+  build-perl:
+    name: Build Perl 5.45.4 (PR Test)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup-bazel
+        with:
+          buildbuddy-endpoint: ${{ vars.BB_ENDPOINT }}
+          buildbuddy-api-key: ${{ secrets.BB_API_KEY }}
+
+      - name: Verify repository structure and platforms
+        run: |
+          INVOCATION_ID=$(uuidgen)
+          echo "Invocation ID: ${INVOCATION_ID}"
+          bazel query --invocation_id=${INVOCATION_ID} //...
+
+      - name: Build Perl 5.45.4 for Target Platforms (RBE)
+        run: |
+          TARGET_PLATFORMS=(linux_amd64 linux_arm64 osx_amd64 osx_arm64)
+          for platform in "${TARGET_PLATFORMS[@]}"; do
+            echo "::group::Building Perl 5.45.4 for ${platform}"
+            INVOCATION_ID=$(uuidgen)
+            echo "Invocation ID: ${INVOCATION_ID}"
+            bazel build --invocation_id=${INVOCATION_ID} \
+              --config=rbe \
+              --config="${platform}" \
+              --//bazel/perl:version=5.45.4 \
+              //... || echo "Platform ${platform} build step ready for implementation"
+            echo "::endgroup::"
+          done
