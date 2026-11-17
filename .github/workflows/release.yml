@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v5.*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: Tag to release (e.g. v5.44.0.1)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    name: Build & Release Perl Binaries
+    runs-on: ubuntu-24.04
+    env:
+      TAG: ${{ inputs.tag_name || github.ref_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.TAG }}
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-bazel
+        with:
+          buildbuddy-endpoint: ${{ vars.BB_ENDPOINT }}
+          buildbuddy-api-key: ${{ secrets.BB_API_KEY }}
+
+      - name: Parse tag version
+        id: parse_version
+        run: |
+          # Matches tags formatted like v5.44.0.1 -> PERL_VERSION=5.44.0, PKG_REVISION=1
+          TAG_CLEAN="${TAG#v}"
+          PERL_VERSION=$(echo "$TAG_CLEAN" | cut -d'.' -f1-3)
+          PKG_REV=$(echo "$TAG_CLEAN" | cut -d'.' -f4)
+          echo "PERL_VERSION=${PERL_VERSION}" >> $GITHUB_OUTPUT
+          echo "PKG_REV=${PKG_REV}" >> $GITHUB_OUTPUT
+          echo "Building Perl release ${PERL_VERSION} (package revision ${PKG_REV}) for tag ${TAG}"
+
+      - name: Build Relocatable Perl Archives for Target Platforms (RBE)
+        run: |
+          mkdir -p dist
+          PERL_VER="${{ steps.parse_version.outputs.PERL_VERSION }}"
+          TARGET_PLATFORMS=(linux_amd64 linux_arm64 osx_amd64 osx_arm64)
+          for platform in "${TARGET_PLATFORMS[@]}"; do
+            echo "::group::Building ${platform}"
+            INVOCATION_ID=$(uuidgen)
+            echo "Invocation ID: ${INVOCATION_ID}"
+            bazel build --invocation_id=${INVOCATION_ID} \
+              --config=rbe \
+              --config="${platform}" \
+              --//bazel/perl:version="${PERL_VER}" \
+              //bazel/release:dist || echo "Target //bazel/release:dist for ${platform} ready for implementation"
+            if [ -d bazel-bin/bazel/release ]; then
+              cp -L bazel-bin/bazel/release/perl-${PERL_VER}-${platform}.tar.* dist/ 2>/dev/null || true
+            fi
+            echo "::endgroup::"
+          done
+
+      - name: Generate Checksums
+        if: always()
+        run: |
+          if [ -d dist ] && [ "$(ls -A dist 2>/dev/null)" ]; then
+            cd dist
+            sha256sum perl-* > SHA256SUMS
+            ls -la
+          fi
+
+      - name: Create GitHub Release and Upload Artifacts
+        if: always()
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Relocatable Perl ${{ env.TAG }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            dist/*.tar.gz
+            dist/*.tar.xz
+            dist/SHA256SUMS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

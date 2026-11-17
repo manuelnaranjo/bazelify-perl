@@ -1,0 +1,41 @@
+module(
+    name = "bazelify-perl",
+    version = "0.0.0",
+    bazel_compatibility = [">=7.1.0"],
+)
+
+# Core platforms and skylib
+bazel_dep(name = "platforms", version = "1.1.0")
+bazel_dep(name = "platforms_contrib", version = "1.0.0-alpha.0")
+bazel_dep(name = "bazel_skylib", version = "1.9.2")
+bazel_dep(name = "rules_cc", version = "0.2.28")
+bazel_dep(name = "rules_shell", version = "0.10.0")
+bazel_dep(name = "tar.bzl", version = "0.10.9")
+
+# Hermetic LLVM C/C++ toolchain from BCR
+bazel_dep(name = "llvm", version = "0.8.27")
+
+register_toolchains(
+    "@llvm//toolchain:all",
+)
+
+# LLVM Darwin SDK frameworks
+osx = use_extension("@llvm//extensions:osx.bzl", "osx")
+osx.frameworks(names = [
+    "CoreFoundation",
+    "Foundation",
+    "Security",
+    "SystemConfiguration",
+])
+
+# Remote Execution Platform setup from BCR (BuildBuddy)
+bazel_dep(name = "toolchains_buildbuddy", version = "0.0.4")
+
+buildbuddy = use_extension(
+    "@toolchains_buildbuddy//:extensions.bzl",
+    "buildbuddy",
+)
+buildbuddy.platform(
+    container_image = "docker://gcr.io/flame-public/rbe-ubuntu24-04@sha256:be9853fc45092d2cf2bda3abed30d22182881659a50bf35c7125161d7cfc8a75",
+)
+use_repo(buildbuddy, "buildbuddy_toolchain")
