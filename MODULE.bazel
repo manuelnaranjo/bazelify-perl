@@ -39,3 +39,10 @@ buildbuddy.platform(
     container_image = "docker://gcr.io/flame-public/rbe-ubuntu24-04@sha256:be9853fc45092d2cf2bda3abed30d22182881659a50bf35c7125161d7cfc8a75",
 )
 use_repo(buildbuddy, "buildbuddy_toolchain")
+
+# Upstream Perl source distribution
+perl = use_extension("//bazel:extensions.bzl", "perl_dist")
+perl.version(
+    version = "5.45.4",
+)
+use_repo(perl, "perl")

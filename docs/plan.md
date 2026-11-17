@@ -125,10 +125,10 @@ flowchart TD
 - [x] Write `docs/plan.md`.
 
 ### Milestone 2: Upstream Source Fetching & Header Preparation ([#4](https://github.com/manuelnaranjo/bazelify-perl/issues/4))
-- [ ] Implement `bazel/extensions.bzl` (`perl_dist` module extension) to download tarballs from `https://www.cpan.org/src/5.0/`.
-- [ ] Setup patch application mechanism pointing to `bazel/patches/perl/`.
-- [ ] Capture and stage hermetic `config.h` and `config.sh` for Linux (glibc 2.28) and macOS SDK.
-- [ ] Implement opcode/keyword regeneration or pre-staged generated C sources (`keywords.c`, `opcode.h`).
+- [x] Implement `bazel/extensions.bzl` (`perl_dist` module extension) to download tarballs from `https://www.cpan.org/src/5.0/`.
+- [x] Setup patch application mechanism pointing to `bazel/patches/perl/`.
+- [x] Capture and stage hermetic `config.h` and `config.sh` for Linux (glibc 2.28) and macOS SDK.
+- [x] Implement opcode/keyword regeneration or pre-staged generated C sources (`keywords.c`, `opcode.h`, `regnodes.h`).
 
 ### Milestone 3: Core Compilation & any2bazel Parity ([#5](https://github.com/manuelnaranjo/bazelify-perl/issues/5))
 - [ ] Create `bazel/perl/perl.BUILD.bazel` overlay defining `cc_library` / `cc_binary` for `miniperl`, `libperl`, and `perl`.
