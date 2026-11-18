@@ -92,6 +92,12 @@ jobs:
             //bazel/release:upstream_unit_test \
             //bazel/release:upstream_unit_nopthread_test
 
+      - name: Run E2E Integration Smoke Test (rules_perl)
+        run: |
+          TARBALL=$(ls dist/perl-*-linux_amd64.tar.gz | head -n 1)
+          chmod +x e2e/run_e2e_test.sh
+          ./e2e/run_e2e_test.sh "${TARBALL}"
+
   validate-linux-arm64:
     name: Validate Cross-Compiled Perl on Linux ARM64
     needs: [build-perl]

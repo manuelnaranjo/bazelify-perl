@@ -1,0 +1,12 @@
+module(
+    name = "e2e",
+    version = "1.0.0",
+)
+
+bazel_dep(name = "rules_perl", version = "2.1.0")
+bazel_dep(name = "platforms", version = "1.0.0")
+
+local_perl = use_extension("//:local_perl.bzl", "local_perl")
+use_repo(local_perl, "local_perl")
+
+register_toolchains("//:custom_perl_toolchain", "//:custom_perl_toolchain_exec")

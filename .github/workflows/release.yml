@@ -53,8 +53,19 @@ jobs:
             --config=rbe \
             --remote_download_outputs=toplevel \
             //bazel/release:dist
-          find -L bazel-out/ -maxdepth 5 -name "perl-*.tar.*" -not -path "*/runfiles/*" -exec cp -L -u {} dist/ \;
+          find -L bazel-out/ -name "perl-*.tar.*" -not -path "*/runfiles/*" -exec cp -L -f {} dist/ \;
           ls -la dist/
+          test -f dist/perl-test-suite.tar.gz || (echo "Error: dist/perl-test-suite.tar.gz missing!" && exit 1)
+          test -f dist/perl-*-linux_arm64.tar.gz || (echo "Error: Linux ARM64 tarball missing!" && exit 1)
+          test -f dist/perl-*-linux_arm64-nopthread.tar.gz || (echo "Error: Linux ARM64 nopthread tarball missing!" && exit 1)
+          test -f dist/perl-*-osx_arm64.tar.gz || (echo "Error: macOS ARM64 tarball missing!" && exit 1)
+          test -f dist/perl-*-osx_arm64-nopthread.tar.gz || (echo "Error: macOS ARM64 nopthread tarball missing!" && exit 1)
+
+      - name: Run E2E Integration Smoke Test (rules_perl)
+        run: |
+          TARBALL=$(ls dist/perl-*-linux_amd64.tar.gz | head -n 1)
+          chmod +x e2e/run_e2e_test.sh
+          ./e2e/run_e2e_test.sh "${TARBALL}"
 
       - name: Generate Checksums
         if: always()
