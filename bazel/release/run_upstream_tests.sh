@@ -8,9 +8,9 @@ TEST_MODE="${3:-core}"
 
 # 1. Parse arguments or discover candidate archives
 for arg in "$@"; do
-    if [[ "$arg" == *test-suite*.tar.gz ]] && [ -f "$arg" ]; then
+    if [[ "$arg" == *test-suite*.tar.gz ]]; then
         TEST_ARCHIVE="$arg"
-    elif [[ "$arg" == *.tar.gz ]] && [ -f "$arg" ]; then
+    elif [[ "$arg" == *.tar.gz ]]; then
         TARBALL="$arg"
     fi
 done
@@ -40,7 +40,12 @@ if [ -z "$TEST_ARCHIVE" ]; then
     done
 fi
 
-if [ -n "$TEST_ARCHIVE" ] && [ -f "$TEST_ARCHIVE" ]; then
+if [ -n "$TEST_ARCHIVE" ]; then
+    if [ ! -f "$TEST_ARCHIVE" ]; then
+        echo "Error: Test suite archive '$TEST_ARCHIVE' not found!" >&2
+        ls -la dist/ 2>/dev/null || true
+        exit 1
+    fi
     TEST_ARCHIVE="$(cd "$(dirname "$TEST_ARCHIVE")" && pwd)/$(basename "$TEST_ARCHIVE")"
 fi
 

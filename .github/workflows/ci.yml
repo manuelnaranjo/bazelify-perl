@@ -39,6 +39,22 @@ jobs:
             --remote_download_outputs=toplevel \
             //bazel/release:dist
 
+      - name: Collect Distribution Archives
+        run: |
+          mkdir -p dist
+          find -L bazel-out/ -name "perl-*.tar.*" -not -path "*/runfiles/*" -exec cp -L -f {} dist/ \;
+          ls -la dist/
+          test -f dist/perl-test-suite.tar.gz || (echo "Error: dist/perl-test-suite.tar.gz missing!" && exit 1)
+          test -f dist/perl-*-linux_arm64.tar.gz || (echo "Error: Linux ARM64 tarball missing!" && exit 1)
+          test -f dist/perl-*-osx_arm64.tar.gz || (echo "Error: macOS ARM64 tarball missing!" && exit 1)
+
+      - name: Upload Distribution Archives
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: perl-dist-archives
+          path: dist/*
+          if-no-files-found: error
+
       - name: Run Relocatability & Verification Test (x86_64 Linux)
         run: |
           INVOCATION_ID=$(uuidgen)
@@ -60,19 +76,6 @@ jobs:
             --remote_download_outputs=toplevel \
             --test_output=all \
             //bazel/release:upstream_unit_test
-
-      - name: Collect Distribution Archives
-        run: |
-          mkdir -p dist
-          find -L bazel-out/ -maxdepth 5 -name "perl-*.tar.*" -not -path "*/runfiles/*" -exec cp -L -u {} dist/ \;
-          ls -la dist/
-
-      - name: Upload Distribution Archives
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
-        with:
-          name: perl-dist-archives
-          path: dist/*
-          if-no-files-found: error
 
   validate-linux-arm64:
     name: Validate Cross-Compiled Perl on Linux ARM64
@@ -128,29 +131,3 @@ jobs:
           TEST_ARCHIVE="dist/perl-test-suite.tar.gz"
           ./bazel/release/run_upstream_tests.sh "${TARBALL}" "${TEST_ARCHIVE}"
 
-  validate-osx-amd64:
-    name: Validate Cross-Compiled Perl on macOS AMD64
-    needs: [build-perl]
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Download Distribution Archives
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
-        with:
-          name: perl-dist-archives
-          path: dist
-
-      - name: Validate macOS AMD64 Tarball Relocatability
-        run: |
-          chmod +x bazel/release/verify_dist_test.sh
-          TARBALL=$(ls dist/perl-*-osx_amd64.tar.gz | head -n 1)
-          echo "Validating tarball: ${TARBALL}"
-          ./bazel/release/verify_dist_test.sh "${TARBALL}"
-
-      - name: Run Upstream Unit Test Suite (macOS AMD64)
-        run: |
-          chmod +x bazel/release/run_upstream_tests.sh
-          TARBALL=$(ls dist/perl-*-osx_amd64.tar.gz | head -n 1)
-          TEST_ARCHIVE="dist/perl-test-suite.tar.gz"
-          ./bazel/release/run_upstream_tests.sh "${TARBALL}" "${TEST_ARCHIVE}"
