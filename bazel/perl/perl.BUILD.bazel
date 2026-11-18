@@ -1,5 +1,14 @@
 # Overlay BUILD file for Perl 5.45.4 distribution
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load(
+    "@@//bazel/perl:rules.bzl",
+    "copy_file",
+    "perl_configpm",
+    "perl_main",
+    "perl_ppport",
+    "perl_xs_extension",
+    "write_file",
+)
 
 package(default_visibility = ["//visibility:public"])
 
@@ -66,40 +75,37 @@ genrule(
 )
 
 # Automatically generate git_version.h for release build
-genrule(
+write_file(
     name = "git_version_h",
-    outs = ["git_version.h"],
-    cmd = """cat > $@ << 'EOF'
-/**************************************************************************
-* WARNING: 'git_version.h' is automatically generated
-*          DO NOT EDIT DIRECTLY - edit make_patchnum.pl instead
-***************************************************************************/
-#define PERL_GIT_UNPUSHED_COMMITS		\\
-    /*leave-this-comment*/
-EOF
-""",
+    out = "git_version.h",
+    content = [
+        "/**************************************************************************",
+        "* WARNING: 'git_version.h' is automatically generated",
+        "*          DO NOT EDIT DIRECTLY - edit make_patchnum.pl instead",
+        "***************************************************************************/",
+        "#define PERL_GIT_UNPUSHED_COMMITS\t\t\\",
+        "    /*leave-this-comment*/",
+        "",
+    ],
 )
 
 # Miniperl-specific variants of op.c, perl.c, and universal.c
-genrule(
+copy_file(
     name = "opmini_c",
-    srcs = ["op.c"],
-    outs = ["opmini.c"],
-    cmd = "cp $< $@",
+    src = "op.c",
+    out = "opmini.c",
 )
 
-genrule(
+copy_file(
     name = "perlmini_c",
-    srcs = ["perl.c"],
-    outs = ["perlmini.c"],
-    cmd = "cp $< $@",
+    src = "perl.c",
+    out = "perlmini.c",
 )
 
-genrule(
+copy_file(
     name = "universalmini_c",
-    srcs = ["universal.c"],
-    outs = ["universalmini.c"],
-    cmd = "cp $< $@",
+    src = "universal.c",
+    out = "universalmini.c",
 )
 
 filegroup(
@@ -119,56 +125,25 @@ filegroup(
     ),
 )
 
-genrule(
+perl_configpm(
     name = "generate_configpm",
-    srcs = [
-        "configpm",
-        "Porting/Glossary",
-        "myconfig.SH",
-        "@@//bazel/config:config_sh",
-    ] + glob(["lib/**/*.pm", "lib/**/*.pl"]),
-    outs = [
-        "lib/Config.pm",
-        "lib/Config_heavy.pl",
-        "lib/Config.pod",
-    ],
-    cmd = """
-        ROOT=$$(pwd)/$$(dirname $(location Porting/Glossary))/..
-        cp $(location @@//bazel/config:config_sh) $$ROOT/config.sh
-        (cd $$ROOT && $$OLDPWD/$(location :miniperl) -Ilib configpm)
-        cp $$ROOT/lib/Config.pm $(location lib/Config.pm)
-        cp $$ROOT/lib/Config_heavy.pl $(location lib/Config_heavy.pl)
-        cp $$ROOT/lib/Config.pod $(location lib/Config.pod)
-    """,
-    tools = [":miniperl"],
+    config_sh = "@@//bazel/config:config_sh",
+    configpm_script = "configpm",
+    glossary = "Porting/Glossary",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    myconfig_sh = "myconfig.SH",
 )
 
-genrule(
+perl_xs_extension(
     name = "generate_dynaloader_c",
-    srcs = [
-        "configpm",
-        "ext/DynaLoader/dl_dlopen.xs",
-        "lib/ExtUtils/typemap",
-        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
-        ":perl_library_files",
-        ":generate_configpm",
-    ],
-    outs = ["ext/DynaLoader/DynaLoader.c"],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        INCS="-I$$CFGDIR"
-        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
-            if [ -d "$$d" ]; then
-                INCS="$$INCS -I$$d"
-            fi
-        done
-        TYPEMAP=$$(pwd)/$(location lib/ExtUtils/typemap)
-        XSUBPP=$$(pwd)/$(location dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp)
-        XS=$$(pwd)/$(location ext/DynaLoader/dl_dlopen.xs)
-        $$(pwd)/$(location :miniperl) $$INCS "$$XSUBPP" -noprototypes -typemap "$$TYPEMAP" "$$XS" > $@
-    """,
-    tools = [":miniperl"],
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out_c = "ext/DynaLoader/DynaLoader.c",
+    xs = "ext/DynaLoader/dl_dlopen.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
 )
 
 _CORE_COPTS = [
@@ -341,26 +316,12 @@ cc_binary(
     ],
 )
 
-genrule(
+perl_main(
     name = "generate_perlmain_c",
-    srcs = [
-        "configpm",
-        ":perl_library_files",
-        ":generate_configpm",
-    ],
-    outs = ["perlmain.c"],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        INCS="-I$$CFGDIR"
-        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
-            if [ -d "$$d" ]; then
-                INCS="$$INCS -I$$d"
-            fi
-        done
-        $$(pwd)/$(location :miniperl) $$INCS -MExtUtils::Miniperl -e 'writemain(@ARGV)' DynaLoader > $@
-    """,
-    tools = [":miniperl"],
+    configpm = ":generate_configpm",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out = "perlmain.c",
 )
 
 # libperl library
@@ -392,41 +353,19 @@ cc_binary(
 )
 
 # Core C/XS Extension: POSIX
-genrule(
+perl_xs_extension(
     name = "generate_posix_c",
-    srcs = [
-        "configpm",
-        "lib/ExtUtils/typemap",
-        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
-        ":perl_library_files",
-        ":generate_configpm",
-    ] + glob(["ext/POSIX/**/*"]),
-    outs = [
-        "ext/POSIX/POSIX.c",
-        "ext/POSIX/const-c.inc",
-    ],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        TREE=$$(mktemp -d)
-        mkdir -p $$TREE/lib/ExtUtils $$TREE/ext/POSIX
-        touch $$TREE/config_h.SH $$TREE/perl.h $$TREE/cflags
-        cp -r --no-preserve=mode $$PERL_ROOT/lib/* $$TREE/lib/
-        cp -r --no-preserve=mode $$CFGDIR/* $$TREE/lib/
-        for d in $$PERL_ROOT/cpan/*/lib/* $$PERL_ROOT/dist/*/lib/* $$PERL_ROOT/ext/*/lib/*; do
-            if [ -e "$$d" ]; then cp -r --no-preserve=mode "$$d" $$TREE/lib/; fi
-        done
-        for d in $$PERL_ROOT/cpan/*/*.pm $$PERL_ROOT/dist/*/*.pm $$PERL_ROOT/ext/*/*.pm; do
-            if [ -f "$$d" ]; then cp --no-preserve=mode "$$d" $$TREE/lib/; fi
-        done
-        cp -r --no-preserve=mode $$PERL_ROOT/ext/POSIX/* $$TREE/ext/POSIX/
-        MINIPERL=$$(pwd)/$(location :miniperl)
-        (cd $$TREE/ext/POSIX && PERL_CORE=1 $$MINIPERL -I../../lib Makefile.PL && $$MINIPERL -I../../lib $$PERL_ROOT/dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp -noprototypes -typemap $$PERL_ROOT/lib/ExtUtils/typemap -typemap typemap POSIX.xs > POSIX.c)
-        cp $$TREE/ext/POSIX/POSIX.c $(location ext/POSIX/POSIX.c)
-        cp $$TREE/ext/POSIX/const-c.inc $(location ext/POSIX/const-c.inc)
-        rm -rf $$TREE
-    """,
-    tools = [":miniperl"],
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["ext/POSIX/**/*"]),
+    library_files = [":perl_library_files"],
+    makefile_pl = "ext/POSIX/Makefile.PL",
+    miniperl = ":miniperl",
+    out_c = "ext/POSIX/POSIX.c",
+    out_const_c = "ext/POSIX/const-c.inc",
+    typemaps = ["ext/POSIX/typemap"],
+    xs = "ext/POSIX/POSIX.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
 )
 
 cc_binary(
@@ -448,41 +387,19 @@ cc_binary(
 )
 
 # Core C/XS Extension: Socket
-genrule(
+perl_xs_extension(
     name = "generate_socket_c",
-    srcs = [
-        "configpm",
-        "lib/ExtUtils/typemap",
-        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
-        ":perl_library_files",
-        ":generate_configpm",
-    ] + glob(["cpan/Socket/**/*"]),
-    outs = [
-        "cpan/Socket/Socket.c",
-        "cpan/Socket/const-c.inc",
-    ],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        TREE=$$(mktemp -d)
-        mkdir -p $$TREE/lib/ExtUtils $$TREE/cpan/Socket
-        touch $$TREE/config_h.SH $$TREE/perl.h $$TREE/cflags
-        cp -r --no-preserve=mode $$PERL_ROOT/lib/* $$TREE/lib/
-        cp -r --no-preserve=mode $$CFGDIR/* $$TREE/lib/
-        for d in $$PERL_ROOT/cpan/*/lib/* $$PERL_ROOT/dist/*/lib/* $$PERL_ROOT/ext/*/lib/*; do
-            if [ -e "$$d" ]; then cp -r --no-preserve=mode "$$d" $$TREE/lib/; fi
-        done
-        for d in $$PERL_ROOT/cpan/*/*.pm $$PERL_ROOT/dist/*/*.pm $$PERL_ROOT/ext/*/*.pm; do
-            if [ -f "$$d" ]; then cp --no-preserve=mode "$$d" $$TREE/lib/; fi
-        done
-        cp -r --no-preserve=mode $$PERL_ROOT/cpan/Socket/* $$TREE/cpan/Socket/
-        MINIPERL=$$(pwd)/$(location :miniperl)
-        (cd $$TREE/cpan/Socket && PERL_CORE=1 $$MINIPERL -I../../lib Makefile.PL && $$MINIPERL -I../../lib $$PERL_ROOT/dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp -noprototypes -typemap $$PERL_ROOT/lib/ExtUtils/typemap -typemap typemap Socket.xs > Socket.c)
-        cp $$TREE/cpan/Socket/Socket.c $(location cpan/Socket/Socket.c)
-        cp $$TREE/cpan/Socket/const-c.inc $(location cpan/Socket/const-c.inc)
-        rm -rf $$TREE
-    """,
-    tools = [":miniperl"],
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["cpan/Socket/**/*"]),
+    library_files = [":perl_library_files"],
+    makefile_pl = "cpan/Socket/Makefile.PL",
+    miniperl = ":miniperl",
+    out_c = "cpan/Socket/Socket.c",
+    out_const_c = "cpan/Socket/const-c.inc",
+    typemaps = ["cpan/Socket/typemap"],
+    xs = "cpan/Socket/Socket.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
 )
 
 cc_binary(
@@ -504,41 +421,18 @@ cc_binary(
 )
 
 # Core C/XS Extension: Fcntl
-genrule(
+perl_xs_extension(
     name = "generate_fcntl_c",
-    srcs = [
-        "configpm",
-        "lib/ExtUtils/typemap",
-        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
-        ":perl_library_files",
-        ":generate_configpm",
-    ] + glob(["ext/Fcntl/**/*"]),
-    outs = [
-        "ext/Fcntl/Fcntl.c",
-        "ext/Fcntl/const-c.inc",
-    ],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        TREE=$$(mktemp -d)
-        mkdir -p $$TREE/lib/ExtUtils $$TREE/ext/Fcntl
-        touch $$TREE/config_h.SH $$TREE/perl.h $$TREE/cflags
-        cp -r --no-preserve=mode $$PERL_ROOT/lib/* $$TREE/lib/
-        cp -r --no-preserve=mode $$CFGDIR/* $$TREE/lib/
-        for d in $$PERL_ROOT/cpan/*/lib/* $$PERL_ROOT/dist/*/lib/* $$PERL_ROOT/ext/*/lib/*; do
-            if [ -e "$$d" ]; then cp -r --no-preserve=mode "$$d" $$TREE/lib/; fi
-        done
-        for d in $$PERL_ROOT/cpan/*/*.pm $$PERL_ROOT/dist/*/*.pm $$PERL_ROOT/ext/*/*.pm; do
-            if [ -f "$$d" ]; then cp --no-preserve=mode "$$d" $$TREE/lib/; fi
-        done
-        cp -r --no-preserve=mode $$PERL_ROOT/ext/Fcntl/* $$TREE/ext/Fcntl/
-        MINIPERL=$$(pwd)/$(location :miniperl)
-        (cd $$TREE/ext/Fcntl && PERL_CORE=1 $$MINIPERL -I../../lib Makefile.PL && $$MINIPERL -I../../lib $$PERL_ROOT/dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp -noprototypes -typemap $$PERL_ROOT/lib/ExtUtils/typemap Fcntl.xs > Fcntl.c)
-        cp $$TREE/ext/Fcntl/Fcntl.c $(location ext/Fcntl/Fcntl.c)
-        cp $$TREE/ext/Fcntl/const-c.inc $(location ext/Fcntl/const-c.inc)
-        rm -rf $$TREE
-    """,
-    tools = [":miniperl"],
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["ext/Fcntl/**/*"]),
+    library_files = [":perl_library_files"],
+    makefile_pl = "ext/Fcntl/Makefile.PL",
+    miniperl = ":miniperl",
+    out_c = "ext/Fcntl/Fcntl.c",
+    out_const_c = "ext/Fcntl/const-c.inc",
+    xs = "ext/Fcntl/Fcntl.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
 )
 
 cc_binary(
@@ -560,56 +454,28 @@ cc_binary(
 )
 
 # Helper: ppport.h generator
-genrule(
+perl_ppport(
     name = "generate_ppport_h",
-    srcs = [
-        "configpm",
-        ":perl_library_files",
-        ":generate_configpm",
-    ] + glob(["dist/Devel-PPPort/**/*"]),
-    outs = ["dist/Devel-PPPort/ppport.h"],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        TMP_DIR=$$(mktemp -d)
-        cp -r --no-preserve=mode $$PERL_ROOT/dist/Devel-PPPort/* $$TMP_DIR/
-        MINIPERL=$$(pwd)/$(location :miniperl)
-        (cd $$TMP_DIR && $$MINIPERL -I$$CFGDIR -I$$PERL_ROOT/lib PPPort_pm.PL && $$MINIPERL -I$$CFGDIR -I$$PERL_ROOT/lib -I. ppport_h.PL)
-        cp $$TMP_DIR/ppport.h $@
-        rm -rf $$TMP_DIR
-    """,
-    tools = [":miniperl"],
+    configpm = ":generate_configpm",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out = "dist/Devel-PPPort/ppport.h",
+    ppport_srcs = glob(["dist/Devel-PPPort/**/*"]),
 )
 
 # Core C/XS Extension: IO
-genrule(
+perl_xs_extension(
     name = "generate_io_c",
-    srcs = [
-        "configpm",
-        "lib/ExtUtils/typemap",
-        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
-        ":perl_library_files",
-        ":generate_configpm",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = [
         ":generate_ppport_h",
-        "dist/IO/IO.xs",
     ],
-    outs = ["dist/IO/IO.c"],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        INCS="-I$$CFGDIR"
-        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
-            if [ -d "$$d" ]; then
-                INCS="$$INCS -I$$d"
-            fi
-        done
-        MINIPERL=$$(pwd)/$(location :miniperl)
-        TYPEMAP=$$(pwd)/$(location lib/ExtUtils/typemap)
-        XSUBPP=$$(pwd)/$(location dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp)
-        XS=$$(pwd)/$(location dist/IO/IO.xs)
-        $$MINIPERL $$INCS "$$XSUBPP" -noprototypes -typemap "$$TYPEMAP" "$$XS" > $@
-    """,
-    tools = [":miniperl"],
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out_c = "dist/IO/IO.c",
+    xs = "dist/IO/IO.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
 )
 
 cc_binary(
@@ -640,34 +506,18 @@ cc_binary(
 )
 
 # Core C/XS Extension: Cwd
-genrule(
+perl_xs_extension(
     name = "generate_cwd_c",
-    srcs = [
-        "configpm",
-        "lib/ExtUtils/typemap",
-        "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
-        ":perl_library_files",
-        ":generate_configpm",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = [
         ":generate_ppport_h",
-        "dist/PathTools/Cwd.xs",
     ],
-    outs = ["dist/PathTools/Cwd.c"],
-    cmd = """
-        PERL_ROOT=$$(pwd)/$$(dirname $(location configpm))
-        CFGDIR=$$(dirname $$(echo '$(locations :generate_configpm)' | awk '{print $$1}'))
-        INCS="-I$$CFGDIR"
-        for d in $$PERL_ROOT/lib $$PERL_ROOT/cpan/*/lib $$PERL_ROOT/dist/*/lib $$PERL_ROOT/ext/*/lib $$PERL_ROOT/cpan/* $$PERL_ROOT/dist/* $$PERL_ROOT/ext/*; do
-            if [ -d "$$d" ]; then
-                INCS="$$INCS -I$$d"
-            fi
-        done
-        MINIPERL=$$(pwd)/$(location :miniperl)
-        TYPEMAP=$$(pwd)/$(location lib/ExtUtils/typemap)
-        XSUBPP=$$(pwd)/$(location dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp)
-        XS=$$(pwd)/$(location dist/PathTools/Cwd.xs)
-        $$MINIPERL $$INCS "$$XSUBPP" -noprototypes -typemap "$$TYPEMAP" "$$XS" > $@
-    """,
-    tools = [":miniperl"],
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out_c = "dist/PathTools/Cwd.c",
+    xs = "dist/PathTools/Cwd.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
 )
 
 cc_binary(

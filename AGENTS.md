@@ -29,3 +29,5 @@ Notes for LLM agents working on this repository (`CLAUDE.md`, `CODEX.md`, and `G
   Create all git worktrees under `.worktrees/`.
 - **Untether Outbox:**
   Deliver files for user review to `.untether-outbox/`.
+- **Hermetic Tooling & Genrule Discipline:**
+  Avoid non-hermetic `genrule` usage (e.g., ad-hoc host commands, `cp`, `awk`, shell loops). Always look for hermetic solutions and dedicated rules in `bazel-lib` (e.g., `@aspect_bazel_lib`), APE (cosmopolitan), or standard Bzlmod rulesets before considering custom rules or scripts.
