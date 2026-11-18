@@ -5,6 +5,10 @@ package(default_visibility = ["//visibility:public"])
 # Platform-specific staged headers and definitions for hermetic Perl compilation
 cc_library(
     name = "config_headers",
+    defines = select({
+        "//bazel:use_pthread_disabled": ["PERL_NO_PTHREAD"],
+        "//conditions:default": [],
+    }),
     hdrs = select({
         "//bazel:is_linux_amd64": glob(["linux_amd64/*.h"]),
         "//bazel:is_linux_arm64": glob(["linux_arm64/*.h"]),
@@ -43,15 +47,36 @@ cc_library(
     }),
 )
 
-# Platform-specific config.sh configuration file
+# Platform-specific config.sh configuration file (with pthread support)
 filegroup(
-    name = "config_sh",
+    name = "config_sh_pthread",
     srcs = select({
         "//bazel:is_linux_amd64": ["linux_amd64/config.sh"],
         "//bazel:is_linux_arm64": ["linux_arm64/config.sh"],
         "//bazel:is_osx_amd64": ["osx_amd64/config.sh"],
         "//bazel:is_osx_arm64": ["osx_arm64/config.sh"],
         "//conditions:default": ["linux_amd64/config.sh"],
+    }),
+)
+
+# Platform-specific config.sh configuration file (without pthread support)
+filegroup(
+    name = "config_sh_nopthread",
+    srcs = select({
+        "//bazel:is_linux_amd64": ["linux_amd64/config_nopthread.sh"],
+        "//bazel:is_linux_arm64": ["linux_arm64/config_nopthread.sh"],
+        "//bazel:is_osx_amd64": ["osx_amd64/config_nopthread.sh"],
+        "//bazel:is_osx_arm64": ["osx_arm64/config_nopthread.sh"],
+        "//conditions:default": ["linux_amd64/config_nopthread.sh"],
+    }),
+)
+
+# Active config.sh conditionally selected by //bazel:use_pthread
+filegroup(
+    name = "config_sh",
+    srcs = select({
+        "//bazel:use_pthread_disabled": [":config_sh_nopthread"],
+        "//conditions:default": [":config_sh_pthread"],
     }),
 )
 

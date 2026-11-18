@@ -46,7 +46,9 @@ jobs:
           ls -la dist/
           test -f dist/perl-test-suite.tar.gz || (echo "Error: dist/perl-test-suite.tar.gz missing!" && exit 1)
           test -f dist/perl-*-linux_arm64.tar.gz || (echo "Error: Linux ARM64 tarball missing!" && exit 1)
+          test -f dist/perl-*-linux_arm64-nopthread.tar.gz || (echo "Error: Linux ARM64 nopthread tarball missing!" && exit 1)
           test -f dist/perl-*-osx_arm64.tar.gz || (echo "Error: macOS ARM64 tarball missing!" && exit 1)
+          test -f dist/perl-*-osx_arm64-nopthread.tar.gz || (echo "Error: macOS ARM64 nopthread tarball missing!" && exit 1)
 
       - name: Upload Distribution Archives
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
@@ -75,7 +77,8 @@ jobs:
             --config=rbe \
             --remote_download_outputs=toplevel \
             --test_output=all \
-            //bazel/release:verify_dist_test
+            //bazel/release:verify_dist_test \
+            //bazel/release:verify_dist_nopthread_test
 
       - name: Run Upstream Unit Test Suite (x86_64 Linux RBE)
         run: |
@@ -86,7 +89,8 @@ jobs:
             --config=rbe \
             --remote_download_outputs=toplevel \
             --test_output=all \
-            //bazel/release:upstream_unit_test
+            //bazel/release:upstream_unit_test \
+            //bazel/release:upstream_unit_nopthread_test
 
   validate-linux-arm64:
     name: Validate Cross-Compiled Perl on Linux ARM64
@@ -101,19 +105,26 @@ jobs:
           name: perl-dist-archives
           path: dist
 
-      - name: Validate Linux ARM64 Tarball Relocatability
+      - name: Validate Linux ARM64 Tarballs Relocatability
         run: |
           chmod +x bazel/release/verify_dist_test.sh
-          TARBALL=$(ls dist/perl-*-linux_arm64.tar.gz | head -n 1)
-          echo "Validating tarball: ${TARBALL}"
-          ./bazel/release/verify_dist_test.sh "${TARBALL}"
+          TARBALL_PTHREAD=$(ls dist/perl-*-linux_arm64.tar.gz | head -n 1)
+          TARBALL_NOPTHREAD=$(ls dist/perl-*-linux_arm64-nopthread.tar.gz | head -n 1)
+          echo "Validating tarball (pthread): ${TARBALL_PTHREAD}"
+          ./bazel/release/verify_dist_test.sh "${TARBALL_PTHREAD}"
+          echo "Validating tarball (nopthread): ${TARBALL_NOPTHREAD}"
+          ./bazel/release/verify_dist_test.sh "${TARBALL_NOPTHREAD}"
 
       - name: Run Upstream Unit Test Suite (Linux ARM64)
         run: |
           chmod +x bazel/release/run_upstream_tests.sh
-          TARBALL=$(ls dist/perl-*-linux_arm64.tar.gz | head -n 1)
           TEST_ARCHIVE="dist/perl-test-suite.tar.gz"
-          ./bazel/release/run_upstream_tests.sh "${TARBALL}" "${TEST_ARCHIVE}"
+          TARBALL_PTHREAD=$(ls dist/perl-*-linux_arm64.tar.gz | head -n 1)
+          TARBALL_NOPTHREAD=$(ls dist/perl-*-linux_arm64-nopthread.tar.gz | head -n 1)
+          echo "Running tests against pthread distribution: ${TARBALL_PTHREAD}"
+          ./bazel/release/run_upstream_tests.sh "${TARBALL_PTHREAD}" "${TEST_ARCHIVE}"
+          echo "Running tests against nopthread distribution: ${TARBALL_NOPTHREAD}"
+          ./bazel/release/run_upstream_tests.sh "${TARBALL_NOPTHREAD}" "${TEST_ARCHIVE}"
 
   validate-osx-arm64:
     name: Validate Cross-Compiled Perl on macOS ARM64
@@ -128,17 +139,24 @@ jobs:
           name: perl-dist-archives
           path: dist
 
-      - name: Validate macOS ARM64 Tarball Relocatability
+      - name: Validate macOS ARM64 Tarballs Relocatability
         run: |
           chmod +x bazel/release/verify_dist_test.sh
-          TARBALL=$(ls dist/perl-*-osx_arm64.tar.gz | head -n 1)
-          echo "Validating tarball: ${TARBALL}"
-          ./bazel/release/verify_dist_test.sh "${TARBALL}"
+          TARBALL_PTHREAD=$(ls dist/perl-*-osx_arm64.tar.gz | head -n 1)
+          TARBALL_NOPTHREAD=$(ls dist/perl-*-osx_arm64-nopthread.tar.gz | head -n 1)
+          echo "Validating tarball (pthread): ${TARBALL_PTHREAD}"
+          ./bazel/release/verify_dist_test.sh "${TARBALL_PTHREAD}"
+          echo "Validating tarball (nopthread): ${TARBALL_NOPTHREAD}"
+          ./bazel/release/verify_dist_test.sh "${TARBALL_NOPTHREAD}"
 
       - name: Run Upstream Unit Test Suite (macOS ARM64)
         run: |
           chmod +x bazel/release/run_upstream_tests.sh
-          TARBALL=$(ls dist/perl-*-osx_arm64.tar.gz | head -n 1)
           TEST_ARCHIVE="dist/perl-test-suite.tar.gz"
-          ./bazel/release/run_upstream_tests.sh "${TARBALL}" "${TEST_ARCHIVE}"
+          TARBALL_PTHREAD=$(ls dist/perl-*-osx_arm64.tar.gz | head -n 1)
+          TARBALL_NOPTHREAD=$(ls dist/perl-*-osx_arm64-nopthread.tar.gz | head -n 1)
+          echo "Running tests against pthread distribution: ${TARBALL_PTHREAD}"
+          ./bazel/release/run_upstream_tests.sh "${TARBALL_PTHREAD}" "${TEST_ARCHIVE}"
+          echo "Running tests against nopthread distribution: ${TARBALL_NOPTHREAD}"
+          ./bazel/release/run_upstream_tests.sh "${TARBALL_NOPTHREAD}" "${TEST_ARCHIVE}"
 

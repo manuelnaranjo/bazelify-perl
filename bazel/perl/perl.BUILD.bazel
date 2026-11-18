@@ -221,27 +221,31 @@ _EXTENSION_COPTS = [
     ".",
 ]
 
-_SYSTEM_LIBS = select({
+_BASE_SYSTEM_LIBS = select({
     "@@//bazel:is_osx_amd64": [
-        "-lpthread",
         "-ldl",
         "-lm",
         "-lc",
     ],
     "@@//bazel:is_osx_arm64": [
-        "-lpthread",
         "-ldl",
         "-lm",
         "-lc",
     ],
     "//conditions:default": [
-        "-lpthread",
         "-ldl",
         "-lm",
         "-lutil",
         "-lc",
     ],
 })
+
+_PTHREAD_LIBS = select({
+    "@@//bazel:use_pthread_disabled": [],
+    "//conditions:default": ["-lpthread"],
+})
+
+_SYSTEM_LIBS = _PTHREAD_LIBS + _BASE_SYSTEM_LIBS
 
 _PERL_LINKOPTS = select({
     "@@//bazel:is_osx_amd64": [],

@@ -3239,7 +3239,9 @@
  *	system call is available to set the contention scope attribute of
  *	a thread attribute object.
  */
+#ifndef PERL_NO_PTHREAD
 #define HAS_PTHREAD_ATTR_SETSCOPE		/**/
+#endif
 
 /* HAS_PTRDIFF_T:
  *	This symbol will be defined if the C compiler supports ptrdiff_t.
@@ -5072,7 +5074,9 @@
  *	This symbol, if defined, indicates that the pthread_atfork routine
  *	is available to setup fork handlers.
  */
+#ifndef PERL_NO_PTHREAD
 #define HAS_PTHREAD_ATFORK		/**/
+#endif
 
 /* HAS_PTHREAD_YIELD:
  *	This symbol, if defined, indicates that the pthread_yield
@@ -5328,7 +5332,9 @@
  *	This symbol, if defined, indicates to the C program that it should
  *	include <pthread.h>.
  */
+#ifndef PERL_NO_PTHREAD
 #define   I_PTHREAD	/**/
+#endif
 
 /* USE_ITHREADS:
  *	This symbol, if defined, indicates that Perl should be built to

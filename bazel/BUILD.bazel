@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@platforms_contrib//os/linux/libc/glibc:glibc.bzl", "glibc_version_constraints")
 
 package(default_visibility = ["//visibility:public"])
@@ -85,4 +86,24 @@ config_setting(
         "@platforms//os:macos",
         "@platforms//cpu:aarch64",
     ],
+)
+
+# Build setting to enable or disable pthread support in Perl build
+bool_flag(
+    name = "use_pthread",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "use_pthread_enabled",
+    flag_values = {
+        ":use_pthread": "true",
+    },
+)
+
+config_setting(
+    name = "use_pthread_disabled",
+    flag_values = {
+        ":use_pthread": "false",
+    },
 )

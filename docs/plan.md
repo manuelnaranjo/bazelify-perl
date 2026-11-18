@@ -141,8 +141,9 @@ flowchart TD
 - [x] Implement post-build Starlark rule / script to patch `Config_heavy.pl` and `Config.pm` with relative paths.
 - [x] Implement shebang rewriting tool (`change-shebang`).
 - [x] Propagate version via Starlark provider `PerlVersionInfo` attached to `@perl//:version` (`//bazel/perl:version`).
-- [x] Assemble distribution archives via platform transitions (`platform_transition_filegroup`) matching `rules_perl` naming:
+- [x] Assemble distribution archives via platform transitions matching `rules_perl` naming:
   `perl-<version>-<platform>.tar.gz` and `perl-<version>-<platform>.tar.xz`, buildable across all target platforms in a single `bazel build //bazel/release:dist` invocation.
+- [x] Add configurable build setting `--//bazel:use_pthread` with transitions providing both pthread and non-pthread distributions (`perl-<version>-<platform>-nopthread.tar.*`) across all target platforms ([#10](https://github.com/manuelnaranjo/bazelify-perl/issues/10)).
 - [x] Verify runtime execution and relocatability in clean environments with parameterized `verify_dist_test.sh`.
 - [x] Add CI cross-runner validation jobs on `ubuntu-24.04-arm` (Linux ARM64) and `macos-14` (Apple Silicon M1/ARM64).
 
