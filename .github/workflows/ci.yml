@@ -55,6 +55,17 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+      - name: Run Miniperl Reproducibility Test
+        run: |
+          INVOCATION_ID=$(uuidgen)
+          echo "Invocation ID: ${INVOCATION_ID}"
+          bazel test --invocation_id=${INVOCATION_ID} \
+            --config=ci \
+            --config=rbe \
+            --remote_download_outputs=toplevel \
+            --test_output=all \
+            //bazel/perl:miniperl_reproducibility_test
+
       - name: Run Relocatability & Verification Test (x86_64 Linux)
         run: |
           INVOCATION_ID=$(uuidgen)

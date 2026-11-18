@@ -1,4 +1,5 @@
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -26,4 +27,38 @@ alias(
 alias(
     name = "config_sh",
     actual = "//bazel/config:config_sh",
+)
+
+# Alias to all miniperl-generated files
+alias(
+    name = "miniperl_generated_files",
+    actual = "@perl//:miniperl_generated_files",
+)
+
+# Automated reproducibility test for all files generated with miniperl
+sh_test(
+    name = "miniperl_reproducibility_test",
+    size = "medium",
+    srcs = ["test_miniperl_reproducibility.sh"],
+    args = [
+        "--miniperl",
+        "$(rootpath :miniperl)",
+        "--config-sh",
+        "$(rootpath :config_sh)",
+        "--config-git",
+        "$(rootpath @perl//:config_git_pl)",
+        "--files",
+        "$(rootpaths :miniperl_generated_files)",
+    ],
+    data = [
+        ":config_sh",
+        ":miniperl",
+        ":miniperl_generated_files",
+        "@perl//:config_git_pl",
+        "@perl//:sources",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
 )

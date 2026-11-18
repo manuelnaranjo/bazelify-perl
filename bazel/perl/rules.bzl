@@ -9,6 +9,13 @@ PerlVersionInfo = _PerlVersionInfo
 copy_file = _copy_file
 write_file = _write_file
 
+_MINIPERL_ENV = {
+    "LC_ALL": "C",
+    "PERL_HASH_SEED": "0",
+    "SOURCE_DATE_EPOCH": "0",
+    "TZ": "UTC",
+}
+
 def _find_perl_root(ctx):
     if ctx.label.workspace_root:
         return ctx.label.workspace_root
@@ -69,6 +76,7 @@ cp "$ROOT/lib/Config.pod" "$OUT_POD"
         tools = [miniperl],
         command = cmd,
         arguments = args,
+        env = _MINIPERL_ENV,
         mnemonic = "PerlConfigPm",
         progress_message = "Generating Config.pm and Config_heavy.pl",
     )
@@ -151,6 +159,7 @@ done
             root,
             out.path,
         ],
+        env = _MINIPERL_ENV,
         mnemonic = "PerlMainGen",
         progress_message = "Generating perlmain.c",
     )
@@ -216,6 +225,7 @@ cp "$SANDBOX_DIR/ppport.h" "$OUT_ABS"
             root,
             out.path,
         ],
+        env = _MINIPERL_ENV,
         mnemonic = "PerlPpportGen",
         progress_message = "Generating ppport.h",
     )
@@ -329,8 +339,11 @@ else
         fi
     done
 
-    XS_ABS="$(pwd)/$XS"
-    "$MINIPERL_ABS" $INCS "$XSUBPP_ABS" -noprototypes $TYPEMAP_ARGS "$XS_ABS" > "$OUT_C_ABS"
+    EXT_DIR="$(dirname "$XS")"
+    (
+        cd "$EXT_DIR"
+        "$MINIPERL_ABS" $INCS "$XSUBPP_ABS" -noprototypes $TYPEMAP_ARGS "$(basename "$XS")" > "$OUT_C_ABS"
+    )
 fi
 """
 
@@ -363,6 +376,7 @@ fi
         tools = [miniperl],
         command = cmd,
         arguments = args,
+        env = _MINIPERL_ENV,
         mnemonic = "PerlXsGen",
         progress_message = "Generating C source for Perl extension %s" % xs.basename,
     )
