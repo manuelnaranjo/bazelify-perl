@@ -51,8 +51,9 @@ jobs:
           echo "Invocation ID: ${INVOCATION_ID}"
           bazel build --invocation_id=${INVOCATION_ID} \
             --config=rbe \
+            --remote_download_outputs=toplevel \
             //bazel/release:dist
-          find bazel-bin/bazel/release bazel-out -name "perl-*.tar.*" -exec cp -L {} dist/ \; || true
+          find -L bazel-out/ -maxdepth 5 -name "perl-*.tar.*" -not -path "*/runfiles/*" -exec cp -L -u {} dist/ \;
           ls -la dist/
 
       - name: Generate Checksums

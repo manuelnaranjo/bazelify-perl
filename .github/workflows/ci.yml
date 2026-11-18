@@ -36,6 +36,7 @@ jobs:
           bazel build --invocation_id=${INVOCATION_ID} \
             --config=ci \
             --config=rbe \
+            --remote_download_outputs=toplevel \
             //bazel/release:dist
 
       - name: Run Relocatability & Verification Test (x86_64 Linux)
@@ -45,13 +46,14 @@ jobs:
           bazel test --invocation_id=${INVOCATION_ID} \
             --config=ci \
             --config=rbe \
+            --remote_download_outputs=toplevel \
             --test_output=all \
             //bazel/release:verify_dist_test
 
       - name: Collect Distribution Archives
         run: |
           mkdir -p dist
-          find bazel-bin/bazel/release bazel-out -name "perl-*.tar.*" -exec cp -L {} dist/ \; || true
+          find -L bazel-out/ -maxdepth 5 -name "perl-*.tar.*" -not -path "*/runfiles/*" -exec cp -L -u {} dist/ \;
           ls -la dist/
 
       - name: Upload Distribution Archives
@@ -59,6 +61,7 @@ jobs:
         with:
           name: perl-dist-archives
           path: dist/*
+          if-no-files-found: error
 
   validate-linux-arm64:
     name: Validate Cross-Compiled Perl on Linux ARM64
@@ -83,7 +86,7 @@ jobs:
   validate-osx-arm64:
     name: Validate Cross-Compiled Perl on macOS ARM64
     needs: [build-perl]
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
