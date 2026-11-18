@@ -605,3 +605,69 @@ cc_binary(
         ":perl_headers",
     ],
 )
+
+# Core C/XS Extension: List-Util
+perl_xs_extension(
+    name = "generate_listutil_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["cpan/Scalar-List-Utils/**/*"]),
+    library_files = [":perl_library_files"],
+    makefile_pl = "cpan/Scalar-List-Utils/Makefile.PL",
+    miniperl = ":miniperl",
+    out_c = "cpan/Scalar-List-Utils/ListUtil.c",
+    xs = "cpan/Scalar-List-Utils/ListUtil.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+cc_binary(
+    name = "List_Util",
+    srcs = [
+        ":generate_listutil_c",
+        "cpan/Scalar-List-Utils/multicall.h",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/cpan/Scalar-List-Utils",
+        "-iquote",
+        "cpan/Scalar-List-Utils",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Core C/XS Extension: mro
+perl_xs_extension(
+    name = "generate_mro_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["ext/mro/**/*"]),
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out_c = "ext/mro/mro.c",
+    xs = "ext/mro/mro.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+cc_binary(
+    name = "mro",
+    srcs = [
+        ":generate_mro_c",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/ext/mro",
+        "-iquote",
+        "ext/mro",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+

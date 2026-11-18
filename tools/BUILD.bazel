@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 exports_files([
     "build_dist.py",
     "change-shebang",
+    "package_test_suite.py",
     "patch_config.py",
     "setup_buildbuddy.sh",
 ])

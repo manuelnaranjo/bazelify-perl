@@ -1,6 +1,6 @@
 load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
-load(":rules.bzl", "perl_distribution")
+load(":rules.bzl", "perl_distribution", "perl_test_suite_archive")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -11,6 +11,8 @@ _CORE_XS_MODULES = [
     "@perl//:IO",
     "@perl//:Cwd",
     "@perl//:File_Glob",
+    "@perl//:List_Util",
+    "@perl//:mro",
 ]
 
 _ARCHNAME = select({
@@ -83,7 +85,16 @@ platform_transition_filegroup(
     target_platform = "//bazel:osx_arm64",
 )
 
-# Aggregated distribution target that packages all 4 target platforms via transitions
+# Hermetic packaging of upstream Perl unit test suite sources
+perl_test_suite_archive(
+    name = "test_suite_pkg",
+    output_name = "perl-test-suite.tar.gz",
+    package_tool = "//tools:package_test_suite.py",
+    sample_source = "@perl//:perl.c",
+    sources = ["@perl//:sources"],
+)
+
+# Aggregated distribution target that packages all 4 target platforms via transitions and the test suite archive
 filegroup(
     name = "dist",
     srcs = [
@@ -91,6 +102,7 @@ filegroup(
         ":dist_linux_arm64",
         ":dist_osx_amd64",
         ":dist_osx_arm64",
+        ":test_suite_pkg",
     ],
 )
 
@@ -102,6 +114,25 @@ sh_test(
     args = ["$(rootpaths :dist_linux_amd64)"],
     data = [
         ":dist_linux_amd64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+# Test executing the upstream Perl unit test suite across core modules
+sh_test(
+    name = "upstream_unit_test",
+    size = "medium",
+    srcs = ["run_upstream_tests.sh"],
+    args = [
+        "$(rootpaths :dist_linux_amd64)",
+        "$(rootpaths :test_suite_pkg)",
+    ],
+    data = [
+        ":dist_linux_amd64",
+        ":test_suite_pkg",
     ],
     target_compatible_with = [
         "@platforms//os:linux",
