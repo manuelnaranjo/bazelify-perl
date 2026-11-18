@@ -220,3 +220,46 @@ perl_test_suite_archive = rule(
     },
 )
 
+def _platform_and_pthread_transition_impl(settings, attr):
+    return {
+        "//command_line_option:platforms": str(attr.target_platform),
+        "//bazel:use_pthread": attr.use_pthread,
+    }
+
+_platform_and_pthread_transition = transition(
+    implementation = _platform_and_pthread_transition_impl,
+    inputs = [],
+    outputs = [
+        "//command_line_option:platforms",
+        "//bazel:use_pthread",
+    ],
+)
+
+def _platform_and_pthread_transition_filegroup_impl(ctx):
+    files = []
+    runfiles = ctx.runfiles()
+    for src in ctx.attr.srcs:
+        files.append(src[DefaultInfo].files)
+        runfiles = runfiles.merge(src[DefaultInfo].default_runfiles)
+    return [
+        DefaultInfo(
+            files = depset(transitive = files),
+            runfiles = runfiles,
+        ),
+    ]
+
+platform_and_pthread_transition_filegroup = rule(
+    implementation = _platform_and_pthread_transition_filegroup_impl,
+    attrs = {
+        "target_platform": attr.label(mandatory = True),
+        "use_pthread": attr.bool(default = True),
+        "srcs": attr.label_list(
+            allow_empty = False,
+            cfg = _platform_and_pthread_transition,
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
+        ),
+    },
+)
+

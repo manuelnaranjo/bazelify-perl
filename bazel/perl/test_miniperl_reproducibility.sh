@@ -158,7 +158,8 @@ regenerate_pass() {
     mkdir -p "$STAGE_DIR"
     local TREE="$STAGE_DIR/tree"
     mkdir -p "$TREE"
-    cp -r --no-preserve=mode "$PERL_SRC_ROOT"/* "$TREE"/
+    cp -r -L --no-preserve=mode "$PERL_SRC_ROOT"/* "$TREE"/
+    chmod -R u+w "$TREE"
 
     export LC_ALL=C
     export PERL_HASH_SEED=0
@@ -168,7 +169,8 @@ regenerate_pass() {
     # 1. Config.pm, Config_heavy.pl, Config.pod
     cp "$CONFIG_SH_ABS" "$TREE/config.sh"
     if [ -n "$CONFIG_GIT_ABS" ]; then
-        cp "$CONFIG_GIT_ABS" "$TREE/lib/Config_git.pl"
+        rm -f "$TREE/lib/Config_git.pl"
+        cp -f "$CONFIG_GIT_ABS" "$TREE/lib/Config_git.pl"
     fi
     (
         cd "$TREE"

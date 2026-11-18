@@ -1,6 +1,10 @@
-load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
-load(":rules.bzl", "perl_distribution", "perl_test_suite_archive")
+load(
+    ":rules.bzl",
+    "perl_distribution",
+    "perl_test_suite_archive",
+    "platform_and_pthread_transition_filegroup",
+)
 
 package(default_visibility = ["//visibility:public"])
 
@@ -31,7 +35,55 @@ _DLEXT = select({
     "//conditions:default": "so",
 })
 
+config_setting(
+    name = "is_linux_amd64_nopthread",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    flag_values = {
+        "//bazel:use_pthread": "false",
+    },
+)
+
+config_setting(
+    name = "is_linux_arm64_nopthread",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
+    ],
+    flag_values = {
+        "//bazel:use_pthread": "false",
+    },
+)
+
+config_setting(
+    name = "is_osx_amd64_nopthread",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+    flag_values = {
+        "//bazel:use_pthread": "false",
+    },
+)
+
+config_setting(
+    name = "is_osx_arm64_nopthread",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:aarch64",
+    ],
+    flag_values = {
+        "//bazel:use_pthread": "false",
+    },
+)
+
 _PLATFORM_NAME = select({
+    ":is_linux_amd64_nopthread": "linux_amd64-nopthread",
+    ":is_linux_arm64_nopthread": "linux_arm64-nopthread",
+    ":is_osx_amd64_nopthread": "osx_amd64-nopthread",
+    ":is_osx_arm64_nopthread": "osx_arm64-nopthread",
     "//bazel:is_linux_amd64": "linux_amd64",
     "//bazel:is_linux_arm64": "linux_arm64",
     "//bazel:is_osx_amd64": "osx_amd64",
@@ -60,29 +112,61 @@ perl_distribution(
     xs_extensions = _CORE_XS_MODULES,
 )
 
-# Cross-platform transitions: build for each target platform in a single invocation
-platform_transition_filegroup(
+# Cross-platform transitions: build for each target platform with and without pthread in a single invocation
+platform_and_pthread_transition_filegroup(
     name = "dist_linux_amd64",
     srcs = [":dist_pkg"],
     target_platform = "//bazel:linux_amd64",
+    use_pthread = True,
 )
 
-platform_transition_filegroup(
+platform_and_pthread_transition_filegroup(
+    name = "dist_linux_amd64_nopthread",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:linux_amd64",
+    use_pthread = False,
+)
+
+platform_and_pthread_transition_filegroup(
     name = "dist_linux_arm64",
     srcs = [":dist_pkg"],
     target_platform = "//bazel:linux_arm64",
+    use_pthread = True,
 )
 
-platform_transition_filegroup(
+platform_and_pthread_transition_filegroup(
+    name = "dist_linux_arm64_nopthread",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:linux_arm64",
+    use_pthread = False,
+)
+
+platform_and_pthread_transition_filegroup(
     name = "dist_osx_amd64",
     srcs = [":dist_pkg"],
     target_platform = "//bazel:osx_amd64",
+    use_pthread = True,
 )
 
-platform_transition_filegroup(
+platform_and_pthread_transition_filegroup(
+    name = "dist_osx_amd64_nopthread",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:osx_amd64",
+    use_pthread = False,
+)
+
+platform_and_pthread_transition_filegroup(
     name = "dist_osx_arm64",
     srcs = [":dist_pkg"],
     target_platform = "//bazel:osx_arm64",
+    use_pthread = True,
+)
+
+platform_and_pthread_transition_filegroup(
+    name = "dist_osx_arm64_nopthread",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:osx_arm64",
+    use_pthread = False,
 )
 
 # Hermetic packaging of upstream Perl unit test suite sources
@@ -94,19 +178,23 @@ perl_test_suite_archive(
     sources = ["@perl//:sources"],
 )
 
-# Aggregated distribution target that packages all 4 target platforms via transitions and the test suite archive
+# Aggregated distribution target that packages all 4 target platforms (both with and without pthread) and the test suite archive
 filegroup(
     name = "dist",
     srcs = [
         ":dist_linux_amd64",
+        ":dist_linux_amd64_nopthread",
         ":dist_linux_arm64",
+        ":dist_linux_arm64_nopthread",
         ":dist_osx_amd64",
+        ":dist_osx_amd64_nopthread",
         ":dist_osx_arm64",
+        ":dist_osx_arm64_nopthread",
         ":test_suite_pkg",
     ],
 )
 
-# Test verifying runtime relocatability and execution in an arbitrary directory
+# Test verifying runtime relocatability and execution in an arbitrary directory (with pthread)
 sh_test(
     name = "verify_dist_test",
     size = "small",
@@ -121,7 +209,22 @@ sh_test(
     ],
 )
 
-# Test executing the upstream Perl unit test suite across core modules
+# Test verifying runtime relocatability and execution in an arbitrary directory (without pthread)
+sh_test(
+    name = "verify_dist_nopthread_test",
+    size = "small",
+    srcs = ["verify_dist_test.sh"],
+    args = ["$(rootpaths :dist_linux_amd64_nopthread)"],
+    data = [
+        ":dist_linux_amd64_nopthread",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+# Test executing the upstream Perl unit test suite across core modules (with pthread)
 sh_test(
     name = "upstream_unit_test",
     size = "medium",
@@ -132,6 +235,25 @@ sh_test(
     ],
     data = [
         ":dist_linux_amd64",
+        ":test_suite_pkg",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+# Test executing the upstream Perl unit test suite across core modules (without pthread)
+sh_test(
+    name = "upstream_unit_nopthread_test",
+    size = "medium",
+    srcs = ["run_upstream_tests.sh"],
+    args = [
+        "$(rootpaths :dist_linux_amd64_nopthread)",
+        "$(rootpaths :test_suite_pkg)",
+    ],
+    data = [
+        ":dist_linux_amd64_nopthread",
         ":test_suite_pkg",
     ],
     target_compatible_with = [
