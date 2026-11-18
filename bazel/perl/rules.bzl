@@ -19,6 +19,7 @@ def _perl_configpm_impl(ctx):
     miniperl = ctx.executable.miniperl
     config_sh = ctx.file.config_sh
     glossary = ctx.file.glossary
+    config_git = ctx.file.config_git
 
     root_dir = _find_perl_root(ctx)
 
@@ -30,31 +31,41 @@ ROOT="$3"
 OUT_PM="$4"
 OUT_HEAVY="$5"
 OUT_POD="$6"
+CONFIG_GIT="${7:-}"
 
 cp "$CONFIG_SH" "$ROOT/config.sh"
+if [ -n "$CONFIG_GIT" ] && [ -f "$CONFIG_GIT" ]; then
+    cp "$CONFIG_GIT" "$ROOT/lib/Config_git.pl"
+fi
 (cd "$ROOT" && "$OLDPWD/$MINIPERL" -Ilib configpm)
 cp "$ROOT/lib/Config.pm" "$OUT_PM"
 cp "$ROOT/lib/Config_heavy.pl" "$OUT_HEAVY"
 cp "$ROOT/lib/Config.pod" "$OUT_POD"
 """
+    inputs = ctx.files.library_files + [
+        config_sh,
+        ctx.file.configpm_script,
+        glossary,
+        ctx.file.myconfig_sh,
+    ]
+    args = [
+        miniperl.path,
+        config_sh.path,
+        root_dir,
+        out_pm.path,
+        out_heavy.path,
+        out_pod.path,
+    ]
+    if config_git:
+        inputs.append(config_git)
+        args.append(config_git.path)
+
     ctx.actions.run_shell(
         outputs = [out_pm, out_heavy, out_pod],
-        inputs = ctx.files.library_files + [
-            config_sh,
-            ctx.file.configpm_script,
-            glossary,
-            ctx.file.myconfig_sh,
-        ],
+        inputs = inputs,
         tools = [miniperl],
         command = cmd,
-        arguments = [
-            miniperl.path,
-            config_sh.path,
-            root_dir,
-            out_pm.path,
-            out_heavy.path,
-            out_pod.path,
-        ],
+        arguments = args,
         mnemonic = "PerlConfigPm",
         progress_message = "Generating Config.pm and Config_heavy.pl",
     )
@@ -75,6 +86,9 @@ perl_configpm = rule(
         "configpm_script": attr.label(
             allow_single_file = True,
             mandatory = True,
+        ),
+        "config_git": attr.label(
+            allow_single_file = True,
         ),
         "glossary": attr.label(
             allow_single_file = True,

@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""Rewrite executable script shebangs for relocatable Perl installations.
+
+Replaces hardcoded absolute/build-time perl shebangs:
+    #!/path/to/perl
+with the relocatable shell trampoline:
+    #!/bin/sh
+    exec "$(dirname "$0")"/perl -x "$0" "$@"
+    #!perl
+and cleans any build paths from eval-exec lines.
+"""
+
+import os
+import re
+import stat
+import sys
+
+def rewrite_shebang(filepath, outpath=None):
+    if outpath is None:
+        outpath = filepath
+
+    with open(filepath, "r", encoding="utf-8", errors="surrogateescape") as f:
+        lines = f.readlines()
+
+    if not lines:
+        return False
+
+    first_line = lines[0]
+    # Check if first line is a perl shebang
+    if not re.match(r"^#!.*perl", first_line):
+        return False
+
+    header = [
+        "#!/bin/sh\n",
+        'exec "$(dirname "$0")"/perl -x "$0" "$@"\n',
+        "#!perl\n",
+    ]
+
+    rest = lines[1:]
+    rest_rewritten = []
+    for line in rest:
+        # Scrub build-time paths from: eval 'exec /opt/perl/bin/perl -S $0 ${1+"$@"}'
+        line = re.sub(r"(eval \x27exec )\S+/perl( -S \$0)", r"\1perl\2", line)
+        rest_rewritten.append(line)
+
+    content = header + rest_rewritten
+
+    with open(outpath, "w", encoding="utf-8", errors="surrogateescape") as f:
+        f.writelines(content)
+
+    try:
+        os.chmod(outpath, 0o755)
+    except OSError:
+        pass
+
+    return True
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: change-shebang <script_file> [output_file]", file=sys.stderr)
+        sys.exit(1)
+
+    in_file = sys.argv[1]
+    out_file = sys.argv[2] if len(sys.argv) > 2 else in_file
+    rewrite_shebang(in_file, out_file)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,121 @@
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("@tar.bzl", "mutate", "tar")
+load(":rules.bzl", "perl_distribution_tree")
+
+package(default_visibility = ["//visibility:public"])
+
+_CORE_XS_MODULES = [
+    "@perl//:POSIX",
+    "@perl//:Socket",
+    "@perl//:Fcntl",
+    "@perl//:IO",
+    "@perl//:Cwd",
+    "@perl//:File_Glob",
+]
+
+_PLATFORMS = {
+    "linux_amd64": {
+        "archname": "x86_64-linux",
+        "dlext": "so",
+    },
+    "linux_arm64": {
+        "archname": "aarch64-linux",
+        "dlext": "so",
+    },
+    "osx_amd64": {
+        "archname": "darwin-2level",
+        "dlext": "bundle",
+    },
+    "osx_arm64": {
+        "archname": "darwin-2level",
+        "dlext": "bundle",
+    },
+}
+
+[
+    perl_distribution_tree(
+        name = "tree_" + platform,
+        archname = info["archname"],
+        build_dist = "//tools:build_dist.py",
+        change_shebang = "//tools:change-shebang",
+        config_git_pl = "@perl//:config_git_pl",
+        config_heavy_pl = "@perl//:lib/Config_heavy.pl",
+        config_pm = "@perl//:lib/Config.pm",
+        dir_name = "perl-5.45.4-" + platform,
+        dlext = info["dlext"],
+        library_files = ["@perl//:perl_library_files"],
+        miniperl = "@perl//:miniperl",
+        patch_config = "//tools:patch_config.py",
+        perl = "@perl//:perl",
+        platform_name = platform,
+        sample_source = "@perl//:perl.c",
+        sources = ["@perl//:sources"],
+        version = "5.45.4",
+        xs_extensions = _CORE_XS_MODULES,
+    )
+    for platform, info in _PLATFORMS.items()
+]
+
+[
+    tar(
+        name = "dist_" + platform + "_gz",
+        srcs = [":tree_" + platform],
+        compress = "gzip",
+        mutate = mutate(strip_prefix = package_name()),
+        out = "perl-5.45.4-" + platform + ".tar.gz",
+    )
+    for platform in _PLATFORMS.keys()
+]
+
+[
+    tar(
+        name = "dist_" + platform + "_xz",
+        srcs = [":tree_" + platform],
+        compress = "xz",
+        mutate = mutate(strip_prefix = package_name()),
+        out = "perl-5.45.4-" + platform + ".tar.xz",
+    )
+    for platform in _PLATFORMS.keys()
+]
+
+# Default distribution target matching release workflow:
+# Produces both .tar.gz and .tar.xz for the active target platform.
+filegroup(
+    name = "dist",
+    srcs = select({
+        "//bazel:is_linux_amd64": [
+            ":dist_linux_amd64_gz",
+            ":dist_linux_amd64_xz",
+        ],
+        "//bazel:is_linux_arm64": [
+            ":dist_linux_arm64_gz",
+            ":dist_linux_arm64_xz",
+        ],
+        "//bazel:is_osx_amd64": [
+            ":dist_osx_amd64_gz",
+            ":dist_osx_amd64_xz",
+        ],
+        "//bazel:is_osx_arm64": [
+            ":dist_osx_arm64_gz",
+            ":dist_osx_arm64_xz",
+        ],
+        "//conditions:default": [
+            ":dist_linux_amd64_gz",
+            ":dist_linux_amd64_xz",
+        ],
+    }),
+)
+
+# Test verifying runtime relocatability and execution in an arbitrary directory
+sh_test(
+    name = "verify_dist_test",
+    size = "small",
+    srcs = ["verify_dist_test.sh"],
+    data = [
+        ":dist_linux_amd64_gz",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
