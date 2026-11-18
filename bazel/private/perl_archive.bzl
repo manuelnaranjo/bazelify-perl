@@ -145,6 +145,7 @@ perl_archive = repository_rule(
             doc = "Arguments passed to patch command. Defaults to ['-p1'].",
         ),
         "build_file": attr.label(
+            default = Label("//bazel/perl:perl.BUILD.bazel"),
             doc = "Custom BUILD file to use in place of the default template.",
         ),
     },

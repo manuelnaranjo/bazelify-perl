@@ -1,0 +1,18 @@
+{
+  "target_map": {
+    "miniperl": "@@+perl_dist+perl//:miniperl",
+    "perl": "@@+perl_dist+perl//:perl"
+  },
+  "ignore": {
+    "defines": [],
+    "flags": [],
+    "flags_prefixes": [],
+    "link_flags": [
+      "-fstack-protector-strong"
+    ],
+    "link_flags_prefixes": []
+  },
+  "rationales": {
+    "-fstack-protector-strong": "Upstream Perl Configure adds -fstack-protector-strong to ldflags; in Bazel and clang/lld, stack protection is handled at compile time and is redundant on the link line."
+  }
+}

@@ -2,10 +2,18 @@ load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 
 package(default_visibility = ["//visibility:public"])
 
+exports_files(["perl.BUILD.bazel"])
+
 # Build setting flag: --//bazel/perl:version=<version>
 string_flag(
     name = "version",
     build_setting_default = "5.45.4",
+)
+
+# Alias to miniperl binary
+alias(
+    name = "miniperl",
+    actual = "@perl//:miniperl",
 )
 
 # Alias to target platform config headers

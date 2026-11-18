@@ -37,9 +37,10 @@ jobs:
             INVOCATION_ID=$(uuidgen)
             echo "Invocation ID: ${INVOCATION_ID}"
             bazel build --invocation_id=${INVOCATION_ID} \
+              --config=ci \
               --config=rbe \
               --config="${platform}" \
               --//bazel/perl:version=5.45.4 \
-              //... || echo "Platform ${platform} build step ready for implementation"
+              //... @perl//...
             echo "::endgroup::"
           done

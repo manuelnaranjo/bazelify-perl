@@ -56,7 +56,7 @@
  *	This symbol, if defined, indicates that the crypt routine is available
  *	to encrypt passwords and the like.
  */
-#define HAS_CRYPT		/**/
+/*#define HAS_CRYPT		/**/
 
 /* HAS_CTERMID:
  *	This symbol, if defined, indicates that the ctermid routine is
@@ -3459,13 +3459,13 @@
  *	This symbol, if defined, indicates that the strlcat () routine is
  *	available to do string concatenation.
  */
-#define HAS_STRLCAT		/**/
+/*#define HAS_STRLCAT		/**/
 
 /* HAS_STRLCPY:
  *	This symbol, if defined, indicates that the strlcpy () routine is
  *	available to do string copying.
  */
-#define HAS_STRLCPY		/**/
+/*#define HAS_STRLCPY		/**/
 
 /* HAS_STRNLEN:
  *	This symbol, if defined, indicates that the strnlen () routine is

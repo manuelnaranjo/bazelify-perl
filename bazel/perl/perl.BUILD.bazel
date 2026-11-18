@@ -1,0 +1,547 @@
+# Overlay BUILD file for Perl 5.45.4 distribution
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load(
+    "@@//bazel/perl:rules.bzl",
+    "copy_file",
+    "perl_configpm",
+    "perl_main",
+    "perl_ppport",
+    "perl_xs_extension",
+    "write_file",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(glob(["**"]))
+
+# All sources in upstream Perl distribution
+filegroup(
+    name = "sources",
+    srcs = glob(["**"]),
+)
+
+# Header files
+filegroup(
+    name = "headers",
+    srcs = glob([
+        "*.h",
+        "cpan/**/*.h",
+        "dist/**/*.h",
+        "ext/**/*.h",
+    ]),
+)
+
+# C source translation units
+filegroup(
+    name = "c_sources",
+    srcs = glob([
+        "*.c",
+        "cpan/**/*.c",
+        "dist/**/*.c",
+        "ext/**/*.c",
+    ]),
+)
+
+# Pre-staged generated C sources and headers from upstream CPAN release
+filegroup(
+    name = "generated_c_sources",
+    srcs = [
+        "keywords.c",
+        "opcode.h",
+        "opnames.h",
+        "regnodes.h",
+    ],
+)
+
+# Host generator tool for uudmap.h, bitcount.h, and mg_data.h
+cc_binary(
+    name = "generate_uudmap",
+    srcs = [
+        "generate_uudmap.c",
+        "mg_raw.h",
+    ],
+)
+
+# Action to regenerate uudmap.h, bitcount.h, and mg_data.h
+genrule(
+    name = "regenerate_headers",
+    outs = [
+        "bitcount.h",
+        "mg_data.h",
+        "uudmap.h",
+    ],
+    cmd = "$(execpath :generate_uudmap) $(OUTS)",
+    tools = [":generate_uudmap"],
+)
+
+# Automatically generate git_version.h for release build
+write_file(
+    name = "git_version_h",
+    out = "git_version.h",
+    content = [
+        "/**************************************************************************",
+        "* WARNING: 'git_version.h' is automatically generated",
+        "*          DO NOT EDIT DIRECTLY - edit make_patchnum.pl instead",
+        "***************************************************************************/",
+        "#define PERL_GIT_UNPUSHED_COMMITS\t\t\\",
+        "    /*leave-this-comment*/",
+        "",
+    ],
+)
+
+# Miniperl-specific variants of op.c, perl.c, and universal.c
+copy_file(
+    name = "opmini_c",
+    src = "op.c",
+    out = "opmini.c",
+)
+
+copy_file(
+    name = "perlmini_c",
+    src = "perl.c",
+    out = "perlmini.c",
+)
+
+copy_file(
+    name = "universalmini_c",
+    src = "universal.c",
+    out = "universalmini.c",
+)
+
+filegroup(
+    name = "perl_library_files",
+    srcs = glob(
+        [
+            "lib/**/*.pm",
+            "lib/**/*.pl",
+            "cpan/**/*.pm",
+            "cpan/**/*.pl",
+            "dist/**/*.pm",
+            "dist/**/*.pl",
+            "ext/**/*.pm",
+            "ext/**/*.pl",
+        ],
+        allow_empty = True,
+    ),
+)
+
+perl_configpm(
+    name = "generate_configpm",
+    config_sh = "@@//bazel/config:config_sh",
+    configpm_script = "configpm",
+    glossary = "Porting/Glossary",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    myconfig_sh = "myconfig.SH",
+)
+
+perl_xs_extension(
+    name = "generate_dynaloader_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out_c = "ext/DynaLoader/DynaLoader.c",
+    xs = "ext/DynaLoader/dl_dlopen.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+_CORE_COPTS = [
+    "-DPERL_CORE",
+    "-fwrapv",
+    "-fno-strict-aliasing",
+    "-pipe",
+    "-fstack-protector-strong",
+    "-D_LARGEFILE_SOURCE",
+    "-D_FILE_OFFSET_BITS=64",
+    "-std=c99",
+    "-Wall",
+    "-Werror=pointer-arith",
+    "-Werror=vla",
+    "-Wextra",
+    "-Wno-long-long",
+    "-Wno-declaration-after-statement",
+    "-Wno-nonnull-compare",
+    "-Wc++-compat",
+    "-Wwrite-strings",
+    "-iquote",
+    "external/+perl_dist+perl",
+    "-iquote",
+    "external/+perl_dist+perl/ext/DynaLoader",
+    "-iquote",
+    ".",
+    "-iquote",
+    "ext/DynaLoader",
+]
+
+_EXTENSION_COPTS = [
+    "-fwrapv",
+    "-fno-strict-aliasing",
+    "-pipe",
+    "-fstack-protector-strong",
+    "-D_LARGEFILE_SOURCE",
+    "-D_FILE_OFFSET_BITS=64",
+    "-std=c99",
+    "-Wall",
+    "-Werror=pointer-arith",
+    "-Werror=vla",
+    "-Wextra",
+    "-Wno-long-long",
+    "-Wno-declaration-after-statement",
+    "-Wno-nonnull-compare",
+    "-Wc++-compat",
+    "-Wwrite-strings",
+    "-iquote",
+    "external/+perl_dist+perl",
+    "-iquote",
+    ".",
+]
+
+_SYSTEM_LIBS = select({
+    "@@//bazel:is_osx_amd64": [
+        "-lpthread",
+        "-ldl",
+        "-lm",
+        "-lc",
+    ],
+    "@@//bazel:is_osx_arm64": [
+        "-lpthread",
+        "-ldl",
+        "-lm",
+        "-lc",
+    ],
+    "//conditions:default": [
+        "-lpthread",
+        "-ldl",
+        "-lm",
+        "-lutil",
+        "-lc",
+    ],
+})
+
+_PERL_LINKOPTS = select({
+    "@@//bazel:is_osx_amd64": [],
+    "@@//bazel:is_osx_arm64": [],
+    "//conditions:default": ["-Wl,-E"],
+})
+
+_EXTENSION_LINKOPTS = select({
+    "@@//bazel:is_osx_amd64": ["-undefined", "dynamic_lookup"],
+    "@@//bazel:is_osx_arm64": ["-undefined", "dynamic_lookup"],
+    "//conditions:default": [],
+})
+
+_COMMON_SRCS = [
+    "av.c",
+    "builtin.c",
+    "caretx.c",
+    "class.c",
+    "deb.c",
+    "doio.c",
+    "doop.c",
+    "dquote.c",
+    "dump.c",
+    "globals.c",
+    "gv.c",
+    "hv.c",
+    "keywords.c",
+    "locale.c",
+    "long_names.c",
+    "mathoms.c",
+    "mg.c",
+    "mro_core.c",
+    "numeric.c",
+    "pad.c",
+    "peep.c",
+    "perlio.c",
+    "perly.c",
+    "pp.c",
+    "pp_ctl.c",
+    "pp_hot.c",
+    "pp_pack.c",
+    "pp_sort.c",
+    "pp_sys.c",
+    "reentr.c",
+    "regcomp.c",
+    "regcomp_debug.c",
+    "regcomp_invlist.c",
+    "regcomp_study.c",
+    "regcomp_trie.c",
+    "regexec.c",
+    "run.c",
+    "scope.c",
+    "sv.c",
+    "taint.c",
+    "time64.c",
+    "toke.c",
+    "utf8.c",
+    "util.c",
+]
+
+cc_library(
+    name = "perl_headers",
+    hdrs = glob([
+        "*.h",
+        "*.inc",
+    ]) + [
+        ":git_version_h",
+    ],
+    textual_hdrs = [
+        "perly.act",
+        "perly.tab",
+        "vutil.c",
+        "ext/DynaLoader/dlutils.c",
+    ],
+    deps = [
+        "@@//bazel/config:config_headers",
+    ],
+)
+
+# miniperl binary
+cc_binary(
+    name = "miniperl",
+    srcs = _COMMON_SRCS + [
+        ":opmini_c",
+        ":perlmini_c",
+        ":universalmini_c",
+        "miniperlmain.c",
+    ],
+    copts = _CORE_COPTS + [
+        "-DPERL_IS_MINIPERL",
+        "-DPERL_EXTERNAL_GLOB",
+    ],
+    linkopts = _SYSTEM_LIBS,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+perl_main(
+    name = "generate_perlmain_c",
+    configpm = ":generate_configpm",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out = "perlmain.c",
+)
+
+# libperl library
+cc_library(
+    name = "libperl",
+    srcs = _COMMON_SRCS + [
+        "op.c",
+        "perl.c",
+        "universal.c",
+        ":generate_dynaloader_c",
+    ],
+    copts = _CORE_COPTS,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# perl binary
+cc_binary(
+    name = "perl",
+    srcs = [
+        ":generate_perlmain_c",
+    ],
+    copts = _CORE_COPTS,
+    linkopts = _SYSTEM_LIBS + _PERL_LINKOPTS,
+    deps = [
+        ":libperl",
+    ],
+)
+
+# Core C/XS Extension: POSIX
+perl_xs_extension(
+    name = "generate_posix_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["ext/POSIX/**/*"]),
+    library_files = [":perl_library_files"],
+    makefile_pl = "ext/POSIX/Makefile.PL",
+    miniperl = ":miniperl",
+    out_c = "ext/POSIX/POSIX.c",
+    out_const_c = "ext/POSIX/const-c.inc",
+    typemaps = ["ext/POSIX/typemap"],
+    xs = "ext/POSIX/POSIX.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+cc_binary(
+    name = "POSIX",
+    srcs = [
+        ":generate_posix_c",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/ext/POSIX",
+        "-iquote",
+        "ext/POSIX",
+    ],
+    linkopts = _EXTENSION_LINKOPTS + ["-lm"],
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Core C/XS Extension: Socket
+perl_xs_extension(
+    name = "generate_socket_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["cpan/Socket/**/*"]),
+    library_files = [":perl_library_files"],
+    makefile_pl = "cpan/Socket/Makefile.PL",
+    miniperl = ":miniperl",
+    out_c = "cpan/Socket/Socket.c",
+    out_const_c = "cpan/Socket/const-c.inc",
+    typemaps = ["cpan/Socket/typemap"],
+    xs = "cpan/Socket/Socket.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+cc_binary(
+    name = "Socket",
+    srcs = [
+        ":generate_socket_c",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/cpan/Socket",
+        "-iquote",
+        "cpan/Socket",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Core C/XS Extension: Fcntl
+perl_xs_extension(
+    name = "generate_fcntl_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = glob(["ext/Fcntl/**/*"]),
+    library_files = [":perl_library_files"],
+    makefile_pl = "ext/Fcntl/Makefile.PL",
+    miniperl = ":miniperl",
+    out_c = "ext/Fcntl/Fcntl.c",
+    out_const_c = "ext/Fcntl/const-c.inc",
+    xs = "ext/Fcntl/Fcntl.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+cc_binary(
+    name = "Fcntl",
+    srcs = [
+        ":generate_fcntl_c",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/ext/Fcntl",
+        "-iquote",
+        "ext/Fcntl",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Helper: ppport.h generator
+perl_ppport(
+    name = "generate_ppport_h",
+    configpm = ":generate_configpm",
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out = "dist/Devel-PPPort/ppport.h",
+    ppport_srcs = glob(["dist/Devel-PPPort/**/*"]),
+)
+
+# Core C/XS Extension: IO
+perl_xs_extension(
+    name = "generate_io_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = [
+        ":generate_ppport_h",
+    ],
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out_c = "dist/IO/IO.c",
+    xs = "dist/IO/IO.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+cc_binary(
+    name = "IO",
+    srcs = [
+        ":generate_io_c",
+        ":generate_ppport_h",
+        "dist/IO/poll.c",
+        "dist/IO/poll.h",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/dist/IO",
+        "-iquote",
+        "dist/IO",
+        "-iquote",
+        "$(GENDIR)/external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "dist/Devel-PPPort",
+    ],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)
+
+# Core C/XS Extension: Cwd
+perl_xs_extension(
+    name = "generate_cwd_c",
+    configpm = ":generate_configpm",
+    core_typemap = "lib/ExtUtils/typemap",
+    extra_srcs = [
+        ":generate_ppport_h",
+    ],
+    library_files = [":perl_library_files"],
+    miniperl = ":miniperl",
+    out_c = "dist/PathTools/Cwd.c",
+    xs = "dist/PathTools/Cwd.xs",
+    xsubpp = "dist/ExtUtils-ParseXS/lib/ExtUtils/xsubpp",
+)
+
+cc_binary(
+    name = "Cwd",
+    srcs = [
+        ":generate_cwd_c",
+        ":generate_ppport_h",
+    ],
+    copts = _EXTENSION_COPTS + [
+        "-iquote",
+        "external/+perl_dist+perl/dist/PathTools",
+        "-iquote",
+        "dist/PathTools",
+        "-iquote",
+        "$(GENDIR)/external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "external/+perl_dist+perl/dist/Devel-PPPort",
+        "-iquote",
+        "dist/Devel-PPPort",
+    ],
+    defines = ["DOUBLE_SLASHES_SPECIAL=0"],
+    linkopts = _EXTENSION_LINKOPTS,
+    linkshared = True,
+    deps = [
+        ":perl_headers",
+    ],
+)

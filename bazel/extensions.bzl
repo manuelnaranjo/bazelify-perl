@@ -27,6 +27,7 @@ _version_tag = tag_class(
             doc = "Patch arguments, default ['-p1'].",
         ),
         "build_file": attr.label(
+            default = Label("//bazel/perl:perl.BUILD.bazel"),
             doc = "Optional overlay BUILD file.",
         ),
     },
@@ -52,7 +53,7 @@ def _perl_dist_impl(module_ctx):
                 urls = tag.urls,
                 patches = tag.patches,
                 patch_args = tag.patch_args,
-                build_file = tag.build_file,
+                build_file = tag.build_file if tag.build_file else Label("//bazel/perl:perl.BUILD.bazel"),
             )
 
     # If no explicit "perl" repo tag was declared, declare default Perl 5.45.4
@@ -61,6 +62,7 @@ def _perl_dist_impl(module_ctx):
             name = "perl",
             version = "5.45.4",
             patch_args = ["-p1"],
+            build_file = Label("//bazel/perl:perl.BUILD.bazel"),
         )
 
 perl_dist = module_extension(
