@@ -138,11 +138,13 @@ flowchart TD
 - [x] Diff and converge translation units in `any2bazel.json`.
 
 ### Milestone 4: Relocatability & Distribution Packaging ([#6](https://github.com/manuelnaranjo/bazelify-perl/issues/6))
-- [ ] Implement post-build Starlark rule / script to patch `Config_heavy.pl` and `Config.pm` with relative paths.
-- [ ] Implement shebang rewriting tool (`change-shebang`).
-- [ ] Assemble `tar.bzl` distribution archives matching `rules_perl` naming:
-  `perl-<version>-<platform>.tar.gz` and `perl-<version>-<platform>.tar.xz`.
-- [ ] Verify runtime execution of unpacked binaries in clean environments.
+- [x] Implement post-build Starlark rule / script to patch `Config_heavy.pl` and `Config.pm` with relative paths.
+- [x] Implement shebang rewriting tool (`change-shebang`).
+- [x] Propagate version via Starlark provider `PerlVersionInfo` attached to `@perl//:version` (`//bazel/perl:version`).
+- [x] Assemble distribution archives via platform transitions (`platform_transition_filegroup`) matching `rules_perl` naming:
+  `perl-<version>-<platform>.tar.gz` and `perl-<version>-<platform>.tar.xz`, buildable across all target platforms in a single `bazel build //bazel/release:dist` invocation.
+- [x] Verify runtime execution and relocatability in clean environments with parameterized `verify_dist_test.sh`.
+- [x] Add CI cross-runner validation jobs on `ubuntu-24.04-arm` (Linux ARM64) and `macos-14` (Apple Silicon M1/ARM64).
 
 ### Milestone 5: CI/CD Pipeline & End-to-End Validation ([#7](https://github.com/manuelnaranjo/bazelify-perl/issues/7))
 - [ ] Run PR build workflow for Perl 5.45.4 with live BuildBuddy RBE credentials.

@@ -1,0 +1,110 @@
+load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load(":rules.bzl", "perl_distribution")
+
+package(default_visibility = ["//visibility:public"])
+
+_CORE_XS_MODULES = [
+    "@perl//:POSIX",
+    "@perl//:Socket",
+    "@perl//:Fcntl",
+    "@perl//:IO",
+    "@perl//:Cwd",
+    "@perl//:File_Glob",
+]
+
+_ARCHNAME = select({
+    "//bazel:is_linux_amd64": "x86_64-linux",
+    "//bazel:is_linux_arm64": "aarch64-linux",
+    "//bazel:is_osx_amd64": "darwin-2level",
+    "//bazel:is_osx_arm64": "darwin-2level",
+    "//conditions:default": "x86_64-linux",
+})
+
+_DLEXT = select({
+    "//bazel:is_linux_amd64": "so",
+    "//bazel:is_linux_arm64": "so",
+    "//bazel:is_osx_amd64": "bundle",
+    "//bazel:is_osx_arm64": "bundle",
+    "//conditions:default": "so",
+})
+
+_PLATFORM_NAME = select({
+    "//bazel:is_linux_amd64": "linux_amd64",
+    "//bazel:is_linux_arm64": "linux_arm64",
+    "//bazel:is_osx_amd64": "osx_amd64",
+    "//bazel:is_osx_arm64": "osx_arm64",
+    "//conditions:default": "linux_amd64",
+})
+
+# Base distribution packaging target for the active target platform configuration
+perl_distribution(
+    name = "dist_pkg",
+    archname = _ARCHNAME,
+    build_dist = "//tools:build_dist.py",
+    change_shebang = "//tools:change-shebang",
+    config_git_pl = "@perl//:config_git_pl",
+    config_heavy_pl = "@perl//:lib/Config_heavy.pl",
+    config_pm = "@perl//:lib/Config.pm",
+    dlext = _DLEXT,
+    library_files = ["@perl//:perl_library_files"],
+    miniperl = "@perl//:miniperl",
+    patch_config = "//tools:patch_config.py",
+    perl = "@perl//:perl",
+    platform_name = _PLATFORM_NAME,
+    sample_source = "@perl//:perl.c",
+    sources = ["@perl//:sources"],
+    version = "//bazel/perl:version",
+    xs_extensions = _CORE_XS_MODULES,
+)
+
+# Cross-platform transitions: build for each target platform in a single invocation
+platform_transition_filegroup(
+    name = "dist_linux_amd64",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:linux_amd64",
+)
+
+platform_transition_filegroup(
+    name = "dist_linux_arm64",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:linux_arm64",
+)
+
+platform_transition_filegroup(
+    name = "dist_osx_amd64",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:osx_amd64",
+)
+
+platform_transition_filegroup(
+    name = "dist_osx_arm64",
+    srcs = [":dist_pkg"],
+    target_platform = "//bazel:osx_arm64",
+)
+
+# Aggregated distribution target that packages all 4 target platforms via transitions
+filegroup(
+    name = "dist",
+    srcs = [
+        ":dist_linux_amd64",
+        ":dist_linux_arm64",
+        ":dist_osx_amd64",
+        ":dist_osx_arm64",
+    ],
+)
+
+# Test verifying runtime relocatability and execution in an arbitrary directory
+sh_test(
+    name = "verify_dist_test",
+    size = "small",
+    srcs = ["verify_dist_test.sh"],
+    args = ["$(rootpaths :dist_linux_amd64)"],
+    data = [
+        ":dist_linux_amd64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
