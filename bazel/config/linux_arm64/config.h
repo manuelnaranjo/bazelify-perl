@@ -1234,8 +1234,8 @@
  *	This symbol contains the ~name expanded version of ARCHLIB, to be used
  *	in programs that are not prepared to deal with ~ expansion at run-time.
  */
-#define ARCHLIB ".../../lib/5.45.4/x86_64-linux"		/**/
-#define ARCHLIB_EXP ".../../lib/5.45.4/x86_64-linux"		/**/
+#define ARCHLIB ".../../lib/5.45.4/aarch64-linux"		/**/
+#define ARCHLIB_EXP ".../../lib/5.45.4/aarch64-linux"		/**/
 
 /* BIN:
  *	This symbol holds the path of the bin directory where the package will
@@ -1306,8 +1306,8 @@
  *	This symbol contains the ~name expanded version of SITEARCH, to be used
  *	in programs that are not prepared to deal with ~ expansion at run-time.
  */
-#define SITEARCH ".../../lib/site_perl/5.45.4/x86_64-linux"		/**/
-#define SITEARCH_EXP ".../../lib/site_perl/5.45.4/x86_64-linux"		/**/
+#define SITEARCH ".../../lib/site_perl/5.45.4/aarch64-linux"		/**/
+#define SITEARCH_EXP ".../../lib/site_perl/5.45.4/aarch64-linux"		/**/
 
 /* SITELIB:
  *	This symbol contains the name of the private library for this package.
