@@ -1,10 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARBALL="bazel/release/perl-5.45.4-linux_amd64.tar.gz"
+TARBALL=""
+for arg in "$@"; do
+    if [[ "$arg" == *.tar.gz ]] && [ -f "$arg" ]; then
+        TARBALL="$arg"
+        break
+    elif [ -f "$arg" ]; then
+        TARBALL="$arg"
+        break
+    fi
+done
 
-if [ ! -f "$TARBALL" ]; then
-    echo "Error: Tarball $TARBALL not found!" >&2
+if [ -z "$TARBALL" ]; then
+    # Fallback to default path or glob matching
+    for candidate in bazel/release/perl-*.tar.gz ./perl-*.tar.gz; do
+        if [ -f "$candidate" ]; then
+            TARBALL="$candidate"
+            break
+        fi
+    done
+fi
+
+if [ -z "$TARBALL" ] || [ ! -f "$TARBALL" ]; then
+    echo "Error: Tarball not provided or not found! (searched: $@)" >&2
     exit 1
 fi
 
@@ -13,7 +32,8 @@ mkdir -p "$DEST_DIR"
 
 tar -xzf "$TARBALL" -C "$DEST_DIR"
 
-PERL_ROOT="$DEST_DIR/perl-5.45.4-linux_amd64"
+# Detect unpacked root directory dynamically
+PERL_ROOT="$(find "$DEST_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
 
 if [ ! -x "$PERL_ROOT/bin/perl" ]; then
     echo "Error: $PERL_ROOT/bin/perl is missing or not executable!" >&2

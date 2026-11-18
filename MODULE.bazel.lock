@@ -269,7 +269,7 @@
   "moduleExtensions": {
     "//bazel:extensions.bzl%perl_dist": {
       "general": {
-        "bzlTransitiveDigest": "w61KFCdOQ/ea7jb624ssf5ufcz/SRHyI87rI6VKmXf8=",
+        "bzlTransitiveDigest": "JH6hSwkZHsbiuuspEcVHkicJfRtk+rAe6igFBKxxEYY=",
         "usagesDigest": "dxkWm7uZb+UmTy6jQNkiEuP+oJiJtcFmfVokFXdHVG4=",
         "recordedInputs": [],
         "generatedRepoSpecs": {

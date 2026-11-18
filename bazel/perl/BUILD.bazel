@@ -4,10 +4,10 @@ package(default_visibility = ["//visibility:public"])
 
 exports_files(["perl.BUILD.bazel"])
 
-# Build setting flag: --//bazel/perl:version=<version>
-string_flag(
+# Version provider alias pointing to the active Perl repository version
+alias(
     name = "version",
-    build_setting_default = "5.45.4",
+    actual = "@perl//:version",
 )
 
 # Alias to miniperl binary

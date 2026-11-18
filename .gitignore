@@ -12,3 +12,7 @@ bazel-*
 
 # Scratch files
 scratch/
+
+# Python cache
+__pycache__/
+*.py[cod]

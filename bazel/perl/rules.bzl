@@ -2,6 +2,9 @@
 
 load("@aspect_bazel_lib//lib:copy_file.bzl", _copy_file = "copy_file")
 load("@bazel_skylib//rules:write_file.bzl", _write_file = "write_file")
+load(":providers.bzl", _PerlVersionInfo = "PerlVersionInfo")
+
+PerlVersionInfo = _PerlVersionInfo
 
 copy_file = _copy_file
 write_file = _write_file
@@ -409,3 +412,28 @@ perl_xs_extension = rule(
         "out_const_c": attr.output(),
     },
 )
+
+def _perl_version_impl(ctx):
+    version = ctx.attr.version
+    parts = version.split(".")
+    major = int(parts[0]) if len(parts) > 0 and parts[0].isdigit() else 0
+    minor = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 0
+    return [
+        PerlVersionInfo(
+            version = version,
+            major = major,
+            minor = minor,
+        ),
+    ]
+
+perl_version = rule(
+    implementation = _perl_version_impl,
+    attrs = {
+        "version": attr.string(
+            doc = "Perl version string",
+            mandatory = True,
+        ),
+    },
+    doc = "Attaches Perl version information to PerlVersionInfo provider.",
+)
+

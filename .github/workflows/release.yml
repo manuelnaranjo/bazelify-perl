@@ -47,22 +47,13 @@ jobs:
       - name: Build Relocatable Perl Archives for Target Platforms (RBE)
         run: |
           mkdir -p dist
-          PERL_VER="${{ steps.parse_version.outputs.PERL_VERSION }}"
-          TARGET_PLATFORMS=(linux_amd64 linux_arm64 osx_amd64 osx_arm64)
-          for platform in "${TARGET_PLATFORMS[@]}"; do
-            echo "::group::Building ${platform}"
-            INVOCATION_ID=$(uuidgen)
-            echo "Invocation ID: ${INVOCATION_ID}"
-            bazel build --invocation_id=${INVOCATION_ID} \
-              --config=rbe \
-              --config="${platform}" \
-              --//bazel/perl:version="${PERL_VER}" \
-              //bazel/release:dist || echo "Target //bazel/release:dist for ${platform} ready for implementation"
-            if [ -d bazel-bin/bazel/release ]; then
-              cp -L bazel-bin/bazel/release/perl-${PERL_VER}-${platform}.tar.* dist/ 2>/dev/null || true
-            fi
-            echo "::endgroup::"
-          done
+          INVOCATION_ID=$(uuidgen)
+          echo "Invocation ID: ${INVOCATION_ID}"
+          bazel build --invocation_id=${INVOCATION_ID} \
+            --config=rbe \
+            //bazel/release:dist
+          find bazel-bin/bazel/release bazel-out -name "perl-*.tar.*" -exec cp -L {} dist/ \; || true
+          ls -la dist/
 
       - name: Generate Checksums
         if: always()

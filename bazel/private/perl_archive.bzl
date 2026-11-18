@@ -48,6 +48,9 @@ def _perl_archive_impl(ctx):
     for patch in ctx.attr.patches:
         ctx.patch(patch, strip = strip_num)
 
+    # Expose version constant for rules to load and propagate
+    ctx.file("version.bzl", 'PERL_VERSION = "%s"\n' % version)
+
     # Setup BUILD.bazel in repository root
     if ctx.attr.build_file:
         ctx.symlink(ctx.attr.build_file, "BUILD.bazel")

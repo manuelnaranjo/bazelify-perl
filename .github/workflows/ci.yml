@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   build-perl:
-    name: Build Perl 5.45.4 (PR Test)
+    name: Build Perl (PR Test)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -29,18 +29,73 @@ jobs:
           echo "Invocation ID: ${INVOCATION_ID}"
           bazel query --invocation_id=${INVOCATION_ID} //...
 
-      - name: Build Perl 5.45.4 for Target Platforms (RBE)
+      - name: Build Relocatable Perl Distributions (RBE)
         run: |
-          TARGET_PLATFORMS=(linux_amd64 linux_arm64 osx_amd64 osx_arm64)
-          for platform in "${TARGET_PLATFORMS[@]}"; do
-            echo "::group::Building Perl 5.45.4 for ${platform}"
-            INVOCATION_ID=$(uuidgen)
-            echo "Invocation ID: ${INVOCATION_ID}"
-            bazel build --invocation_id=${INVOCATION_ID} \
-              --config=ci \
-              --config=rbe \
-              --config="${platform}" \
-              --//bazel/perl:version=5.45.4 \
-              //... @perl//...
-            echo "::endgroup::"
-          done
+          INVOCATION_ID=$(uuidgen)
+          echo "Invocation ID: ${INVOCATION_ID}"
+          bazel build --invocation_id=${INVOCATION_ID} \
+            --config=ci \
+            --config=rbe \
+            //bazel/release:dist
+
+      - name: Run Relocatability & Verification Test (x86_64 Linux)
+        run: |
+          INVOCATION_ID=$(uuidgen)
+          echo "Invocation ID: ${INVOCATION_ID}"
+          bazel test --invocation_id=${INVOCATION_ID} \
+            --config=ci \
+            --config=rbe \
+            --test_output=all \
+            //bazel/release:verify_dist_test
+
+      - name: Collect Distribution Archives
+        run: |
+          mkdir -p dist
+          find bazel-bin/bazel/release bazel-out -name "perl-*.tar.*" -exec cp -L {} dist/ \; || true
+          ls -la dist/
+
+      - name: Upload Distribution Archives
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: perl-dist-archives
+          path: dist/*
+
+  validate-linux-arm64:
+    name: Validate Cross-Compiled Perl on Linux ARM64
+    needs: [build-perl]
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download Distribution Archives
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: perl-dist-archives
+          path: dist
+
+      - name: Validate Linux ARM64 Tarball Relocatability
+        run: |
+          chmod +x bazel/release/verify_dist_test.sh
+          TARBALL=$(ls dist/perl-*-linux_arm64.tar.gz | head -n 1)
+          echo "Validating tarball: ${TARBALL}"
+          ./bazel/release/verify_dist_test.sh "${TARBALL}"
+
+  validate-osx-arm64:
+    name: Validate Cross-Compiled Perl on macOS ARM64
+    needs: [build-perl]
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download Distribution Archives
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: perl-dist-archives
+          path: dist
+
+      - name: Validate macOS ARM64 Tarball Relocatability
+        run: |
+          chmod +x bazel/release/verify_dist_test.sh
+          TARBALL=$(ls dist/perl-*-osx_arm64.tar.gz | head -n 1)
+          echo "Validating tarball: ${TARBALL}"
+          ./bazel/release/verify_dist_test.sh "${TARBALL}"

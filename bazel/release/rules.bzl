@@ -1,7 +1,19 @@
 """Hermetic rules for assembling relocatable Perl distributions."""
 
+load("//bazel/perl:providers.bzl", "PerlVersionInfo")
+
 def _perl_distribution_tree_impl(ctx):
-    out_dir = ctx.actions.declare_directory(ctx.attr.dir_name)
+    if PerlVersionInfo in ctx.attr.version:
+        version = ctx.attr.version[PerlVersionInfo].version
+    else:
+        fail("Target %s does not provide PerlVersionInfo" % ctx.attr.version.label)
+
+    platform_name = ctx.attr.platform_name
+    dir_name = "perl-%s-%s" % (version, platform_name)
+
+    out_dir = ctx.actions.declare_directory(dir_name)
+    out_gz = ctx.actions.declare_file("perl-%s-%s.tar.gz" % (version, platform_name))
+    out_xz = ctx.actions.declare_file("perl-%s-%s.tar.xz" % (version, platform_name))
 
     perl = ctx.executable.perl
     miniperl = ctx.executable.miniperl
@@ -19,6 +31,10 @@ def _perl_distribution_tree_impl(ctx):
     args = [
         "--out-dir",
         out_dir.path,
+        "--out-tar-gz",
+        out_gz.path,
+        "--out-tar-xz",
+        out_xz.path,
         "--perl",
         perl.path,
         "--miniperl",
@@ -30,7 +46,7 @@ def _perl_distribution_tree_impl(ctx):
         "--config-git",
         config_git.path,
         "--version",
-        ctx.attr.version,
+        version,
         "--archname",
         ctx.attr.archname,
         "--dlext",
@@ -58,16 +74,26 @@ def _perl_distribution_tree_impl(ctx):
     )
 
     ctx.actions.run(
-        outputs = [out_dir],
+        outputs = [out_dir, out_gz, out_xz],
         inputs = inputs,
         tools = [miniperl, build_dist],
         executable = build_dist,
         arguments = args,
         mnemonic = "PerlDistTree",
-        progress_message = "Assembling relocatable Perl distribution %s" % ctx.attr.dir_name,
+        progress_message = "Assembling relocatable Perl distribution %s" % dir_name,
     )
 
-    return [DefaultInfo(files = depset([out_dir]))]
+    return [
+        DefaultInfo(
+            files = depset([out_gz, out_xz]),
+        ),
+        OutputGroupInfo(
+            tree = depset([out_dir]),
+            gz = depset([out_gz]),
+            xz = depset([out_xz]),
+            all = depset([out_dir, out_gz, out_xz]),
+        ),
+    ]
 
 perl_distribution_tree = rule(
     implementation = _perl_distribution_tree_impl,
@@ -124,8 +150,10 @@ perl_distribution_tree = rule(
             allow_files = True,
             default = [],
         ),
-        "version": attr.string(
-            default = "5.45.4",
+        "version": attr.label(
+            default = Label("//bazel/perl:version"),
+            providers = [PerlVersionInfo],
+            doc = "Perl version provider target",
         ),
         "platform_name": attr.string(
             mandatory = True,
@@ -136,8 +164,7 @@ perl_distribution_tree = rule(
         "dlext": attr.string(
             default = "so",
         ),
-        "dir_name": attr.string(
-            mandatory = True,
-        ),
     },
 )
+
+perl_distribution = perl_distribution_tree

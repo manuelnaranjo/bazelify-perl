@@ -2,12 +2,15 @@
 """Hermetic packager for relocatable Perl distributions."""
 
 import argparse
+import gzip
+import lzma
 import os
 import re
 import shutil
 import stat
 import subprocess
 import sys
+import tarfile
 
 from patch_config import patch_config_heavy, patch_config_pm
 
@@ -255,9 +258,83 @@ __END__
     with open(dest_file, "w") as f:
         f.write(template)
 
+def create_archive(source_dir, out_path, compression="gz"):
+    """Creates a deterministic, reproducible tar archive of source_dir."""
+    base_dir = os.path.basename(source_dir)
+    parent_dir = os.path.dirname(os.path.abspath(source_dir))
+
+    def reset_tarinfo(tarinfo):
+        tarinfo.uid = 0
+        tarinfo.gid = 0
+        tarinfo.uname = ""
+        tarinfo.gname = ""
+        tarinfo.mtime = 0
+        if tarinfo.isdir():
+            tarinfo.mode = 0o755
+        elif tarinfo.isreg():
+            if tarinfo.mode & 0o111:
+                tarinfo.mode = 0o755
+            else:
+                tarinfo.mode = 0o644
+        return tarinfo
+
+    os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+
+    if compression == "gz":
+        with open(out_path, "wb") as f_out:
+            with gzip.GzipFile(filename="", mode="wb", fileobj=f_out, mtime=0) as gz:
+                with tarfile.open(mode="w", fileobj=gz) as tar:
+                    ti = tar.gettarinfo(source_dir, arcname=base_dir)
+                    reset_tarinfo(ti)
+                    tar.addfile(ti)
+                    for root, dirs, files in os.walk(source_dir):
+                        dirs.sort()
+                        for d in dirs:
+                            p = os.path.join(root, d)
+                            arcname = os.path.relpath(p, parent_dir)
+                            ti = tar.gettarinfo(p, arcname=arcname)
+                            reset_tarinfo(ti)
+                            tar.addfile(ti)
+                        for file in sorted(files):
+                            p = os.path.join(root, file)
+                            arcname = os.path.relpath(p, parent_dir)
+                            ti = tar.gettarinfo(p, arcname=arcname)
+                            reset_tarinfo(ti)
+                            if os.path.islink(p):
+                                tar.addfile(ti)
+                            else:
+                                with open(p, "rb") as f_in:
+                                    tar.addfile(ti, f_in)
+    elif compression == "xz":
+        with lzma.open(out_path, "wb", preset=6) as xz:
+            with tarfile.open(mode="w", fileobj=xz) as tar:
+                ti = tar.gettarinfo(source_dir, arcname=base_dir)
+                reset_tarinfo(ti)
+                tar.addfile(ti)
+                for root, dirs, files in os.walk(source_dir):
+                    dirs.sort()
+                    for d in dirs:
+                        p = os.path.join(root, d)
+                        arcname = os.path.relpath(p, parent_dir)
+                        ti = tar.gettarinfo(p, arcname=arcname)
+                        reset_tarinfo(ti)
+                        tar.addfile(ti)
+                    for file in sorted(files):
+                        p = os.path.join(root, file)
+                        arcname = os.path.relpath(p, parent_dir)
+                        ti = tar.gettarinfo(p, arcname=arcname)
+                        reset_tarinfo(ti)
+                        if os.path.islink(p):
+                            tar.addfile(ti)
+                        else:
+                            with open(p, "rb") as f_in:
+                                tar.addfile(ti, f_in)
+
 def main():
     parser = argparse.ArgumentParser(description="Assemble relocatable Perl distribution")
     parser.add_argument("--out-dir", required=True)
+    parser.add_argument("--out-tar-gz", default=None, help="Output .tar.gz archive path")
+    parser.add_argument("--out-tar-xz", default=None, help="Output .tar.xz archive path")
     parser.add_argument("--perl", required=True)
     parser.add_argument("--miniperl", required=True)
     parser.add_argument("--config-heavy", required=True)
@@ -538,6 +615,12 @@ def main():
                     os.chmod(p, 0o644)
             except OSError:
                 pass
+
+    # 9. Optionally produce distribution archives
+    if args.out_tar_gz:
+        create_archive(out_dir, args.out_tar_gz, compression="gz")
+    if args.out_tar_xz:
+        create_archive(out_dir, args.out_tar_xz, compression="xz")
 
 if __name__ == "__main__":
     main()

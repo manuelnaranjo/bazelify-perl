@@ -1,11 +1,13 @@
-# Overlay BUILD file for Perl 5.45.4 distribution
+# Overlay BUILD file for Perl distribution
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load(":version.bzl", "PERL_VERSION")
 load(
     "@@//bazel/perl:rules.bzl",
     "copy_file",
     "perl_configpm",
     "perl_main",
     "perl_ppport",
+    "perl_version",
     "perl_xs_extension",
     "write_file",
 )
@@ -13,6 +15,12 @@ load(
 package(default_visibility = ["//visibility:public"])
 
 exports_files(glob(["**"]))
+
+# Version provider attached from repository version
+perl_version(
+    name = "version",
+    version = PERL_VERSION,
+)
 
 # All sources in upstream Perl distribution
 filegroup(
