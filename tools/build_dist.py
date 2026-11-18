@@ -343,8 +343,10 @@ def main():
     parser.add_argument("--version", required=True)
     parser.add_argument("--archname", required=True)
     parser.add_argument("--dlext", default="so")
+    parser.add_argument("--platform-name", default="")
     parser.add_argument("--sample-source", required=True, help="Sample source file to deduce perl root")
     parser.add_argument("--xs-lib", action="append", default=[])
+    parser.add_argument("--config-header", action="append", default=[])
 
     args = parser.parse_args()
 
@@ -451,6 +453,27 @@ def main():
     shutil.copy2(dst_heavy, os.path.join(arch_dir, "Config_heavy.pl"))
     shutil.copy2(dst_pm, os.path.join(arch_dir, "Config.pm"))
     shutil.copy2(dst_git, os.path.join(arch_dir, "Config_git.pl"))
+
+    # Copy standard Perl C headers into $arch_dir/CORE (required by rules_perl & MakeMaker)
+    core_dir = os.path.join(arch_dir, "CORE")
+    os.makedirs(core_dir, exist_ok=True)
+    if os.path.isdir(perl_root):
+        for f in os.listdir(perl_root):
+            if f.endswith(".h"):
+                src_h = os.path.join(perl_root, f)
+                if os.path.isfile(src_h):
+                    shutil.copy2(src_h, os.path.join(core_dir, f))
+
+    for ch in args.config_header:
+        if os.path.isfile(ch):
+            dst_ch = os.path.join(core_dir, os.path.basename(ch))
+            shutil.copy2(ch, dst_ch)
+            if os.path.basename(ch) == "config.h" and "nopthread" in args.platform_name:
+                with open(dst_ch, "r", encoding="utf-8", errors="surrogateescape") as f_ch:
+                    h_content = f_ch.read()
+                if "#define PERL_NO_PTHREAD 1" not in h_content:
+                    with open(dst_ch, "w", encoding="utf-8", errors="surrogateescape") as f_ch:
+                        f_ch.write("#define PERL_NO_PTHREAD 1\n" + h_content)
 
     # 4. Run bootstrap module generators
     work_gen = os.path.join(out_dir, "_work_gen")

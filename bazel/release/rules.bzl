@@ -53,15 +53,21 @@ def _perl_distribution_tree_impl(ctx):
         ctx.attr.dlext,
         "--sample-source",
         sample_source.path,
+        "--platform-name",
+        platform_name,
     ]
 
     for xs in xs_files:
         args.extend(["--xs-lib", xs.path])
 
+    for ch in ctx.files.config_headers:
+        args.extend(["--config-header", ch.path])
+
     inputs = (
         ctx.files.sources +
         ctx.files.library_files +
         ctx.files.xs_extensions +
+        ctx.files.config_headers +
         [
             perl,
             config_heavy,
@@ -141,6 +147,10 @@ perl_distribution_tree = rule(
         "sources": attr.label_list(
             allow_files = True,
             default = [],
+        ),
+        "config_headers": attr.label_list(
+            allow_files = True,
+            default = ["//bazel/config:config_headers_files"],
         ),
         "library_files": attr.label_list(
             allow_files = True,

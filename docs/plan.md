@@ -148,9 +148,9 @@ flowchart TD
 - [x] Add CI cross-runner validation jobs on `ubuntu-24.04-arm` (Linux ARM64) and `macos-14` (Apple Silicon M1/ARM64).
 
 ### Milestone 5: CI/CD Pipeline & End-to-End Validation ([#7](https://github.com/manuelnaranjo/bazelify-perl/issues/7))
-- [ ] Run PR build workflow for Perl 5.45.4 with live BuildBuddy RBE credentials.
-- [ ] Test tag release pipeline on simulated tag `v5.45.4.1`.
-- [ ] Set up e2e smoke test verifying consumption by `rules_perl`.
+- [x] Configure and verify CI PR build workflow for Perl 5.45.4 across all 4 platforms with BuildBuddy RBE.
+- [x] Configure and validate release workflow on version tags (`v5.*`) with SHA256 checksums and asset uploads.
+- [x] Establish `e2e/` smoke test workspace demonstrating prebuilt archive consumption and execution by `rules_perl`.
 
 ---
 

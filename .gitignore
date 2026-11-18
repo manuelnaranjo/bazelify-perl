@@ -9,6 +9,8 @@
 
 # Bazel symlinks and outputs
 bazel-*
+e2e/bazel-*
+e2e/dist/
 
 # Scratch files
 scratch/

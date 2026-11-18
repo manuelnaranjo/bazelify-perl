@@ -47,6 +47,18 @@ cc_library(
     }),
 )
 
+# Platform-specific staged header files for distribution packaging
+filegroup(
+    name = "config_headers_files",
+    srcs = select({
+        "//bazel:is_linux_amd64": glob(["linux_amd64/*.h"]),
+        "//bazel:is_linux_arm64": glob(["linux_arm64/*.h"]),
+        "//bazel:is_osx_amd64": glob(["osx_amd64/*.h"]),
+        "//bazel:is_osx_arm64": glob(["osx_arm64/*.h"]),
+        "//conditions:default": glob(["linux_amd64/*.h"]),
+    }),
+)
+
 # Platform-specific config.sh configuration file (with pthread support)
 filegroup(
     name = "config_sh_pthread",

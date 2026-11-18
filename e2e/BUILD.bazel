@@ -1,0 +1,45 @@
+load("@rules_perl//perl:perl_binary.bzl", "perl_binary")
+load("@rules_perl//perl:perl_test.bzl", "perl_test")
+
+package(default_visibility = ["//visibility:public"])
+
+toolchain(
+    name = "custom_perl_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = "@local_perl//:toolchain_impl",
+    toolchain_type = "@rules_perl//perl:toolchain_type",
+)
+
+toolchain(
+    name = "custom_perl_toolchain_exec",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = "@local_perl//:toolchain_impl",
+    toolchain_type = "@rules_perl//perl:exec_toolchain_type",
+)
+
+perl_binary(
+    name = "hello",
+    srcs = ["hello.pl"],
+    main = "hello.pl",
+)
+
+perl_test(
+    name = "smoke_test",
+    size = "small",
+    srcs = ["smoke_test.pl"],
+    main = "smoke_test.pl",
+)
