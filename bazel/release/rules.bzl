@@ -168,3 +168,55 @@ perl_distribution_tree = rule(
 )
 
 perl_distribution = perl_distribution_tree
+
+def _perl_test_suite_archive_impl(ctx):
+    out = ctx.actions.declare_file(ctx.attr.output_name)
+    sample_source = ctx.file.sample_source
+    tool = ctx.executable.package_tool
+
+    args = [
+        "--sample-source",
+        sample_source.path,
+        "--out",
+        out.path,
+    ]
+
+    inputs = ctx.files.sources + [sample_source]
+
+    ctx.actions.run(
+        outputs = [out],
+        inputs = inputs,
+        tools = [tool],
+        executable = tool,
+        arguments = args,
+        mnemonic = "PerlTestSuitePkg",
+        progress_message = "Packaging upstream Perl test suite archive %s" % out.basename,
+    )
+
+    return [
+        DefaultInfo(files = depset([out])),
+    ]
+
+perl_test_suite_archive = rule(
+    implementation = _perl_test_suite_archive_impl,
+    attrs = {
+        "sources": attr.label_list(
+            allow_files = True,
+            default = [],
+        ),
+        "sample_source": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "package_tool": attr.label(
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+            mandatory = True,
+        ),
+        "output_name": attr.string(
+            default = "perl-test-suite.tar.gz",
+        ),
+    },
+)
+

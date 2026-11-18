@@ -467,9 +467,13 @@ def main():
                   work_gen, out_file="DynaLoader.pm", dest_dir=lib_dir)
 
     # lib.pm
-    run_generator(args.miniperl, lib_dir,
-                  os.path.join(perl_root, "dist", "lib", "lib_pm.PL"),
-                  work_gen, out_file="lib.pm", dest_dir=lib_dir)
+    lib_pm_src = os.path.join(perl_root, "dist", "lib", "lib_pm.PL")
+    if os.path.isfile(lib_pm_src):
+        lib_pm_work = os.path.join(work_gen, "lib_pm.PL")
+        shutil.copy2(lib_pm_src, lib_pm_work)
+        run_generator(args.miniperl, lib_dir,
+                      lib_pm_work,
+                      work_gen, out_file="lib.pm", dest_dir=lib_dir)
 
     # Errno.pm (generated hermetically for target arch/osvers)
     generate_errno_pm(archname, osvers, os.path.join(lib_dir, "Errno.pm"))
@@ -477,7 +481,7 @@ def main():
 
     # Pod/Functions.pm
     pod_dir = os.path.join(lib_dir, "Pod")
-    perlfunc = os.path.join(perl_root, "pod", "perlfunc.pod")
+    perlfunc = os.path.abspath(os.path.join(perl_root, "pod", "perlfunc.pod"))
     run_generator(args.miniperl, lib_dir,
                   os.path.join(perl_root, "ext", "Pod-Functions", "Functions_pm.PL"),
                   work_gen, out_file="Functions.pm", dest_dir=pod_dir,
